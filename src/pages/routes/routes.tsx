@@ -15,6 +15,7 @@ import HomePage from '../HomePage';
 // import SignUp from '../Auth/SignUp';
 import MyPage from '../Mypage/MyPage';
 import Layout from '../Components/Layout /Layout';
+import ExhibitionSearch from '../Exhibitions/ExhibitionSearch';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
             },
 
             // 전시 관련 페이지 라우팅
+            {
+                path: 'exhibitions/search',
+                element: <ExhibitionSearch />,
+            },
             {
                 path: 'exhibitions',
                 element: <ExhibitionList />,
