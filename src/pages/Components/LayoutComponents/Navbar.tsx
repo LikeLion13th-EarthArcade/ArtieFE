@@ -5,6 +5,7 @@ import profileIcon from '../../../icons/profile.svg';
 const NAV_ITEMS = [
     { label: '지금 뜨는 전시', path: '/' },
     { label: '전시 찾기', path: '/exhibitions/search' },
+    { label: '전시 등록하기', path: '/exhibitions/request' },
     { label: '공간 대여하기', path: '/spaces' },
     { label: '공간 운영하기', path: '/spaces/request' },
 ];
