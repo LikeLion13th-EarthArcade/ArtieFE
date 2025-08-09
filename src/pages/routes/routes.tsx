@@ -16,31 +16,34 @@ import HomePage from '../HomePage';
 import MyPage from '../Mypage/MyPage';
 import Layout from '../Components/Layout /Layout';
 import ExhibitionSearch from '../Exhibitions/ExhibitionSearch';
+import AuthLayout from '../Components/Layout /AuthLayout';
+import Login from '../Auth/Login';
+import SignUp from '../Auth/SignUp';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
-    // {
-    //     path: '/auth',
-    //     element: <AuthLayout />,
-    //     // errorElement: <ErrorPage />, // 추후에 만들고 설정할게요 에러 페이지가 따로 없는 것 같아서
-    //     children: [
-    //         {
-    //             index: true,
-    //             element: <HomePage />,
-    //         },
-    //         {
-    //             path: 'login',
-    //             element: <Login />,
-    //         },
-    //         {
-    //             path: 'signup',
-    //             element: <SignUp />,
-    //         },
-    //     ],
-    // },
-    //로그인을 했을 경우 넘어가는 layout 시작 부분
     {
         path: '/',
+        element: <AuthLayout />,
+        // errorElement: <ErrorPage />, // 추후에 만들고 설정할게요 에러 페이지가 따로 없는 것 같아서
+        children: [
+            {
+                index: true,
+                element: <HomePage />,
+            },
+            {
+                path: 'login',
+                element: <Login />,
+            },
+            {
+                path: 'signup',
+                element: <SignUp />,
+            },
+        ],
+    },
+    //로그인을 했을 경우 넘어가는 layout 시작 부분
+    {
+        path: '/home',
         element: <Layout />,
         // errorElement: <ErrorPage />, 추후에 만들고 설정할게요 에러 페이지가 따로 없는 것 같아서
         children: [
