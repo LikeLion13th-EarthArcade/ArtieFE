@@ -11,6 +11,19 @@ export default function LandingLoginPage() {
     const [current, setCurrent] = useState(0);
     const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
+    // 입력값 상태
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [name, setName] = useState('');
+
+    // 포커스 상태
+    const [emailFocused, setEmailFocused] = useState(false);
+    const [passwordFocused, setPasswordFocused] = useState(false);
+    const [confirmFocused, setConfirmFocused] = useState(false);
+    const [nameFocused, setNameFocused] = useState(false);
+
+    // 비밀번호 표시 여부
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -20,6 +33,13 @@ export default function LandingLoginPage() {
         }, 3000);
         return () => clearInterval(interval);
     }, [slides.length]);
+
+    useEffect(() => {
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setName('');
+    }, [authMode]);
 
     const progress = ((current + 1) / slides.length) * 100;
 
@@ -51,8 +71,10 @@ export default function LandingLoginPage() {
                 </div>
             </div>
 
+            {/* 오른쪽 로그인/회원가입 */}
             <div className="w-1/2 flex items-center justify-center bg-white">
                 <div className="w-80">
+                    {/* 탭 버튼 */}
                     <div className="flex border border-[#E45F5F] rounded-full mb-6 overflow-hidden select-none">
                         <button
                             onClick={() => setAuthMode('login')}
@@ -74,25 +96,32 @@ export default function LandingLoginPage() {
                         </button>
                     </div>
 
-                    <div className="mb-3 flex flex-col gap-1 focus-within:text-[#E45F5F] transition-colors">
-                        <p className="text-[#999] text-sm transition-colors">이메일</p>
+                    {/* 이메일 */}
+                    <div className={`mb-3 flex flex-col gap-1 transition-colors ${emailFocused || email ? 'text-[#E45F5F]' : 'text-[#999]'}`}>
+                        <p className="text-sm transition-colors">이메일</p>
                         <input
                             type="email"
+                            value={email}
+                            onFocus={() => setEmailFocused(true)}
+                            onBlur={() => setEmailFocused(false)}
+                            onChange={(e) => setEmail(e.target.value)}
                             placeholder={authMode === 'login' ? '이메일' : '예 : artieMail@artie.com'}
-                            className="border border-gray-300 p-2 w-full rounded focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
+                            className="border border-gray-300 p-2 w-full rounded text-gray-900 focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
                         />
                     </div>
 
                     {/* 비밀번호 */}
-                    <div className="mb-5 flex flex-col gap-1 transition-colors">
-                        <p className="text-[#999] text-sm transition-colors">
-                            {authMode === 'login' ? '비밀번호' : '비밀번호 (8~16자의 영문, 숫자, 특수기호)'}
-                        </p>
+                    <div className={`mb-5 flex flex-col gap-1 transition-colors ${passwordFocused || password ? 'text-[#E45F5F]' : 'text-[#999]'}`}>
+                        <p className="text-sm transition-colors">{authMode === 'login' ? '비밀번호' : '비밀번호 (8~16자의 영문, 숫자, 특수기호)'}</p>
                         <div className="relative">
                             <input
                                 type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onFocus={() => setPasswordFocused(true)}
+                                onBlur={() => setPasswordFocused(false)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 placeholder={authMode === 'login' ? '비밀번호' : '영문, 숫자 포함 8자 이상'}
-                                className="border border-gray-300 p-2 w-full rounded pr-10 focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
+                                className="border border-gray-300 p-2 w-full rounded pr-10 text-gray-900 focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
                             />
                             <button
                                 type="button"
@@ -104,13 +133,19 @@ export default function LandingLoginPage() {
                         </div>
                     </div>
 
+                    {/* 회원가입 전용 - 비밀번호 확인 */}
                     {authMode === 'signup' && (
-                        <div className="mb-5 flex flex-col gap-1 transition-colors">
+                        <div className={`mb-5 flex flex-col gap-1 transition-colors ${confirmFocused || confirmPassword ? 'text-[#E45F5F]' : 'text-[#999]'}`}>
+                            <p className="text-sm transition-colors">비밀번호 확인</p>
                             <div className="relative">
                                 <input
                                     type={showConfirmPassword ? 'text' : 'password'}
+                                    value={confirmPassword}
+                                    onFocus={() => setConfirmFocused(true)}
+                                    onBlur={() => setConfirmFocused(false)}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="비밀번호를 한번 더 입력해주세요."
-                                    className="border border-gray-300 p-2 w-full rounded pr-10 focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
+                                    className="border border-gray-300 p-2 w-full rounded pr-10 text-gray-900 focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
                                 />
                                 <button
                                     type="button"
@@ -123,13 +158,18 @@ export default function LandingLoginPage() {
                         </div>
                     )}
 
+                    {/* 회원가입 전용 - 이름 */}
                     {authMode === 'signup' && (
-                        <div className="mb-3 flex flex-col gap-1 focus-within:text-[#E45F5F] transition-colors">
-                            <p className="text-[#999] text-sm transition-colors">이름</p>
+                        <div className={`mb-3 flex flex-col gap-1 transition-colors ${nameFocused || name ? 'text-[#E45F5F]' : 'text-[#999]'}`}>
+                            <p className="text-sm transition-colors">이름</p>
                             <input
                                 type="text"
+                                value={name}
+                                onFocus={() => setNameFocused(true)}
+                                onBlur={() => setNameFocused(false)}
+                                onChange={(e) => setName(e.target.value)}
                                 placeholder="이름을 입력하세요"
-                                className="border border-gray-300 p-2 w-full rounded focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
+                                className="border border-gray-300 p-2 w-full rounded text-gray-900 focus:border-[#E45F5F] focus:outline-none transition-colors focus:placeholder-transparent"
                             />
                         </div>
                     )}
