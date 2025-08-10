@@ -27,12 +27,12 @@ const router = createBrowserRouter([
         element: <AuthLayout />,
         // errorElement: <ErrorPage />, // 추후에 만들고 설정할게요 에러 페이지가 따로 없는 것 같아서
         children: [
+            // {
+            //     index: true,
+            //     element: <HomePage />,
+            // },
             {
                 index: true,
-                element: <HomePage />,
-            },
-            {
-                path: 'login',
                 element: <Login />,
             },
             {
