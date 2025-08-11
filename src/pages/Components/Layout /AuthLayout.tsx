@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import Footer from '../LayoutComponents/Footer';
 
 export default function AuthLayout() {
     return (
@@ -7,8 +6,6 @@ export default function AuthLayout() {
             <main className="flex-1">
                 <Outlet />
             </main>
-
-            <Footer />
         </div>
     );
 }
