@@ -40,24 +40,26 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
 
             {/* 옵션 리스트 */}
             {open && (
-                <div className="absolute top-full mt-4 left-0 right-0 bg-white rounded-[12px] shadow-[0_4px_10px_0_rgba(0,0,0,0.1)] z-50 max-h-[200px] overflow-y-auto">
-                    {options.map((opt: string, idx: number) => (
-                        <div
-                            key={opt}
-                            onClick={() => {
-                                onChange(value === opt ? '' : opt);
-                                setOpen(false);
-                            }}
-                            className={`px-4 py-3 text-[18px] hover:bg-gray-100 cursor-pointer text-center border-b border-[#EAEAEA] ${
-                                idx === options.length - 1 ? 'border-b-0' : ''
-                            }`}
-                            style={{
-                                color: value === opt ? '#E45F5F' : '#636363',
-                            }}
-                        >
-                            {opt}
-                        </div>
-                    ))}
+                <div className="absolute top-full mt-4 left-0 right-0 bg-white rounded-[12px] shadow-[0_4px_10px_0_rgba(0,0,0,0.1)] z-50 max-h-[200px] overflow-hidden">
+                    <div className="max-h-[200px] overflow-y-auto">
+                        {options.map((opt: string, idx: number) => (
+                            <div
+                                key={opt}
+                                onClick={() => {
+                                    onChange(value === opt ? '' : opt);
+                                    setOpen(false);
+                                }}
+                                className={`px-4 py-3 text-[18px] hover:bg-gray-100 cursor-pointer text-center border-b border-[#EAEAEA] ${
+                                    idx === options.length - 1 ? 'border-b-0' : ''
+                                }`}
+                                style={{
+                                    color: value === opt ? '#E45F5F' : '#636363',
+                                }}
+                            >
+                                {opt}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
