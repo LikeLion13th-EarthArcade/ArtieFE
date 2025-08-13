@@ -149,6 +149,10 @@ export default function DatePicker({
 
                             const isToday = new Date().toDateString() === day.date.toDateString();
 
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const isPast = day.date < today;
+
                             return (
                                 <button
                                     key={index}
@@ -158,6 +162,7 @@ export default function DatePicker({
                                         ${!day.isCurrentMonth ? 'text-[#D9D9D9]' : 'text-[#636363]'}
                                         ${isSelected ? 'bg-[#E45F5F] text-white hover:bg-[#E45F5F]' : ''}
                                         ${isToday && !isSelected ? 'bg-gray-100' : ''}
+                                        ${isPast && !isSelected ? 'text-[#D9D9D9]' : ''} 
                                     `}
                                 >
                                     {day.date.getDate()}
