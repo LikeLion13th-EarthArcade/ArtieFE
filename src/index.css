@@ -1,1 +1,40 @@
 @import 'tailwindcss';
+
+* {
+    font-family: 'Pretendard';
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+html,
+body {
+    height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100dvh;
+    height: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    cursor: pointer;
+    /* border: none; */
+}
+
+@theme {
+    --color-primary-100: rgba(228, 95, 95, 0.8);
+    --color-primary-300: #e45f5f;
+
+    --color-default-gray-100: #fefefe;
+    --color-default-gray-400: #e6e6e6;
+    --color-default-gray-500: #c3c3c3;
+    --color-default-gray-700: #616161;
+    --color-default-gray-800: #212121;
+}
