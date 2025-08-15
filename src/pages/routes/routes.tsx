@@ -11,8 +11,6 @@ import MyRents from '../Mypage/MyRents';
 import ProfileEdit from '../Mypage/ProfileEdit';
 import ExhibitionListCreate from '../Exhibitions/ExhibitionListCreate';
 import HomePage from '../HomePage';
-// import Login from '../Auth/Login';
-// import SignUp from '../Auth/SignUp';
 import MyPage from '../Mypage/MyPage';
 import Layout from '../Components/Layout /Layout';
 import ExhibitionSearch from '../Exhibitions/ExhibitionSearch';
@@ -27,12 +25,8 @@ const router = createBrowserRouter([
         element: <AuthLayout />,
         // errorElement: <ErrorPage />, // 추후에 만들고 설정할게요 에러 페이지가 따로 없는 것 같아서
         children: [
-            // {
-            //     index: true,
-            //     element: <HomePage />,
-            // },
             {
-                index: true,
+                // index: true,
                 element: <Login />,
             },
             {
@@ -43,12 +37,12 @@ const router = createBrowserRouter([
     },
     //로그인을 했을 경우 넘어가는 layout 시작 부분
     {
-        path: '/home',
+        path: '/',
         element: <Layout />,
         // errorElement: <ErrorPage />, 추후에 만들고 설정할게요 에러 페이지가 따로 없는 것 같아서
         children: [
             {
-                index: true, // '/' 접근 시 홈으로 갈 수 있게
+                index: true,
                 element: <HomePage />,
             },
 
