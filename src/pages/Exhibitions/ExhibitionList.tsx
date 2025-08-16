@@ -16,7 +16,7 @@ export default function ExhibitionList() {
 
             <div className="h-[1px] w-[80%] bg-primary-300 my-6"></div>
 
-            <ul className="flex justify-center gap-80 mt-3 mb-6">
+            <ul className="flex justify-center gap-6 sm:gap-12 md:gap-40 lg:gap-80 mt-3 mb-6">
                 {[
                     { src: camera, label: '사진•미디어아트' },
                     { src: exhibition, label: '전시회' },
