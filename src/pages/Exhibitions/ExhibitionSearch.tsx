@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import Dropdown from '../Components/Dropdown/Dropdown';
-import DatePicker from '../Components/Dropdown/DatePicker';
+import SearchDropdown from '../Components/Dropdown/SearchDropdown';
+import ExhibitionMiniCard from '../Components/Exhibition/ExhibitionMiniCard';
 import Pagination from '../Components/Pagination/Pagination';
 import exhibitionImage from '../../images/exhibitionImage.png';
 
@@ -131,24 +131,6 @@ export default function ExhibitionSearch() {
         setFilters((prev) => ({ ...prev, [key]: value }));
     };
 
-    // DatePicker에 맞는 날짜 포맷 함수 (value용, yyyy-mm-dd)
-    const formatDateForValue = (date: Date) => {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    };
-
-    // DatePicker에 맞는 날짜 포맷 함수 (표시용, yyyy.mm.dd)
-    const formatDateForDisplay = (dateStr: string) => {
-        if (!dateStr) return '날짜 선택';
-        const date = new Date(dateStr);
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const d = String(date.getDate()).padStart(2, '0');
-        return `${y}.${m}.${d}`;
-    };
-
     // 검색 버튼 클릭 시 조건에 맞는 전시 필터링 함수
     const handleSearch = () => {
         const result = exhibitionData.filter((ex) => {
@@ -176,7 +158,7 @@ export default function ExhibitionSearch() {
     return (
         <>
             {/* 드롭다운 */}
-            <Dropdown
+            <SearchDropdown
                 selectedOptions={filters}
                 onDropdownChange={updateFilter}
                 dropdowns={[
@@ -214,32 +196,37 @@ export default function ExhibitionSearch() {
                     },
 
                     { key: 'format', label: '전시 형태', options: ['전시회', '팝업 스토어', '체험 전시'] },
+                    { key: 'date', label: '날짜', options: [] },
                 ]}
                 onSearch={handleSearch}
-            >
-                <DatePicker
-                    value={filters.date}
-                    onChange={(date: string) => updateFilter('date', date)}
-                    formatDisplayDate={formatDateForDisplay}
-                    formatDate={formatDateForValue}
-                />
-            </Dropdown>
+            ></SearchDropdown>
 
             {/* 정렬 메뉴 */}
             {filteredList.length > 0 && (
-                <div className="w-full max-w-[1450px] mx-auto flex justify-end pr-2 mb-6">
-                    <div className="w-[130px] h-[40px] flex items-center justify-center text-[#999999] select-none border border-[#E45F5F] rounded-[15px]">
+                <div className="w-[80%] max-w-[1450px] mx-auto flex justify-end pr-2 mb-6">
+                    <div
+                        className="w-[130px] h-[40px] flex items-center justify-center select-none border rounded-[15px]"
+                        style={{
+                            color: 'var(--color-default-gray-600)',
+                            border: '1px solid var(--color-primary-300)',
+                        }}
+                    >
                         <div className="relative cursor-pointer select-none flex items-center w-[130px] px-2" onClick={toggleSortMenu}>
-                            <span className="flex-grow text-center font-semibold text-[#E45F5F]">{selectedSort}</span>
+                            <span className="flex-grow text-center font-semibold" style={{ color: 'var(--color-primary-300)' }}>
+                                {selectedSort}
+                            </span>
                             <div className="flex-shrink-0 w-4 ml-1">
-                                <ChevronDown className="text-[#E45F5F]" size={16} />
+                                <ChevronDown style={{ color: 'var(--color-primary-300)' }} size={16} />
                             </div>
                             {isSortMenuOpen && (
-                                <ul className="absolute top-full left-1/2 mt-4 w-[130px] bg-white border border-[#E45F5F] rounded-[15px] z-10 -translate-x-1/2 transform overflow-hidden">
+                                <ul
+                                    className="absolute top-full left-1/2 mt-4 w-[130px] bg-white border rounded-[15px] z-10 -translate-x-1/2 transform overflow-hidden"
+                                    style={{ border: '1px solid var(--color-primary-300)' }}
+                                >
                                     {sortOptions.map((option) => (
                                         <li
                                             key={option}
-                                            className={`px-4 py-2 hover:bg-gray-100 cursor-pointer text-center ${option === selectedSort ? 'text-[#E45F5F]' : ''}`}
+                                            className={`px-4 py-2 hover:bg-[var(--color-default-gray-100)] cursor-pointer text-center ${option === selectedSort ? 'text-[var(--color-primary-300)]' : ''}`}
                                             onClick={(e) => handleSortSelect(option, e)}
                                         >
                                             {option}
@@ -253,7 +240,7 @@ export default function ExhibitionSearch() {
             )}
 
             {/* 전시 리스트 및 페이지네이션 */}
-            <div className="w-full max-w-[1450px] mx-auto">
+            <div className="w-full max-w-[1450px] mx-auto relative">
                 {filteredList.length === 0 ? (
                     <p className="text-center text-[50px] font-semibold my-20">
                         카테고리를 선택해서
@@ -262,29 +249,19 @@ export default function ExhibitionSearch() {
                     </p>
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-center">
-                            {paginatedResults.map((ex, index) => (
-                                <div
-                                    key={`${ex.title}-${index}`}
-                                    className="max-w-[350px] w-full bg-[#FDF4F4] rounded-[20px] shadow-[0_6px_10px_0_rgba(0,0,0,0.1)] p-6"
-                                >
-                                    <img src={ex.image} alt={ex.title} className="rounded-[15px] w-full h-[180px] object-cover" />
-                                    <h3 className="text-xl mt-4">{ex.title}</h3>
-                                    <div className="mt-2 grid grid-rows-2">
-                                        <div className="flex items-start gap-3 min-h-[30px]">
-                                            <span className="w-[81px] flex-shrink-0 bg-[#F46D6D] text-white px-2 py-1 rounded-[10px] text-center">기간</span>
-                                            <span>{ex.period}</span>
-                                        </div>
-                                        <div className="flex items-start gap-3 min-h-[30px]">
-                                            <span className="w-[81px] flex-shrink-0 bg-[#F46D6D] text-white px-2 py-1 rounded-[10px] text-center">장소</span>
-                                            <span>{ex.location}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="min-h-[910px] relative">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-center">
+                                {paginatedResults.map((ex) => (
+                                    <ExhibitionMiniCard key={ex.title} ex={ex} />
+                                ))}
+                            </div>
                         </div>
 
-                        <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
+                        {filteredList.length > 0 && (
+                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full">
+                                <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
+                            </div>
+                        )}
                     </>
                 )}
             </div>
