@@ -30,11 +30,13 @@ button {
 
 @theme {
     --color-primary-100: rgba(228, 95, 95, 0.8);
+    --color-primary-200: #F46D6D; 
     --color-primary-300: #e45f5f;
 
     --color-default-gray-100: #fefefe;
     --color-default-gray-400: #e6e6e6;
     --color-default-gray-500: #c3c3c3;
+    --color-default-gray-600: #9e9e9e;
     --color-default-gray-700: #616161;
     --color-default-gray-800: #212121;
 }
