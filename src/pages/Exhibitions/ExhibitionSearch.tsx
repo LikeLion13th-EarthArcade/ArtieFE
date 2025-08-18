@@ -203,7 +203,7 @@ export default function ExhibitionSearch() {
 
             {/* 정렬 메뉴 */}
             {filteredList.length > 0 && (
-                <div className="w-[80%] max-w-[1450px] mx-auto flex justify-end pr-2 mb-6">
+                <div className="w-[70%] max-w-[1450px] mx-auto flex justify-end pr-2 mb-4">
                     <div
                         className="w-[130px] h-[40px] flex items-center justify-center select-none border rounded-[15px]"
                         style={{
@@ -240,7 +240,7 @@ export default function ExhibitionSearch() {
             )}
 
             {/* 전시 리스트 및 페이지네이션 */}
-            <div className="w-full max-w-[1450px] mx-auto relative">
+            <div className="w-[70%] max-w-[1450px] mx-auto relative">
                 {filteredList.length === 0 ? (
                     <p className="text-center text-[50px] font-semibold my-20">
                         카테고리를 선택해서
@@ -249,7 +249,7 @@ export default function ExhibitionSearch() {
                     </p>
                 ) : (
                     <>
-                        <div className="min-h-[910px] relative">
+                        <div className="min-h-[900px] relative">
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-center">
                                 {paginatedResults.map((ex) => (
                                     <ExhibitionMiniCard key={ex.title} ex={ex} />

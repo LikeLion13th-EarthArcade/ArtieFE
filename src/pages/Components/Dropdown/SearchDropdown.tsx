@@ -243,7 +243,7 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
 
 export default function SearchDropdown({ selectedOptions, onDropdownChange, dropdowns, onSearch }: DropdownProps) {
     return (
-        <div className="flex justify-center items-center py-8 gap-6 w-[80%] mx-auto px-4">
+        <div className="flex justify-center items-center py-8 gap-6 w-[70%] mx-auto px-4">
             <div className="w-full flex-1 max-w-[1365px] h-[70px] bg-white shadow-md rounded-[40px] flex items-center">
                 {dropdowns.map((dd, idx) => (
                     <div key={dd.key} className="flex items-center h-full flex-1 min-w-0">
