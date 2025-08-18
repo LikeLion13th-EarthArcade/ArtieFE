@@ -8,6 +8,7 @@ import sample4 from '../../images/sample4.jpeg';
 import sample5 from '../../images/sample5.jpeg';
 
 import Gallery from '../Components/Exhibition/Gallery';
+import ReviewTab from '../Components/Exhibition/ReviewTab';
 
 export default function ExhibitionDetail() {
     const exhibition = {
@@ -17,7 +18,6 @@ export default function ExhibitionDetail() {
     };
     return (
         <div className="flex flex-col justify-center px-10 py-8 max-w-5xl mx-auto">
-            <div></div>
             <div>
                 <div className="flex justify-between items-center flex-wrap gap-4">
                     <div className="flex gap-3">
@@ -99,7 +99,11 @@ export default function ExhibitionDetail() {
                     </h3>
                     <button className="flex bg-primary-300 py-2 px-4 rounded-full text-white justify-center items-center w-[170px] gap-2">리뷰 작성하기</button>
                 </div>
-                <div className="flex gap-4"></div>
+                <div className="flex flex-col gap-4">
+                    <ReviewTab />
+                    <ReviewTab />
+                    <ReviewTab />
+                </div>
             </div>
         </div>
     );
