@@ -65,7 +65,7 @@ const router = createBrowserRouter([
                 element: <ExhibitionDetail />,
             },
             {
-                path: 'exhibitions/:id/reviews',
+                path: 'exhibitions/:id/review',
                 element: <ExhibitionReview />,
             },
 
