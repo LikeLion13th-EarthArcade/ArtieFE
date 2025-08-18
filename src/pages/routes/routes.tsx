@@ -10,6 +10,7 @@ import MyExhibitions from '../Mypage/MyExhibitions';
 import MyRents from '../Mypage/MyRents';
 import ProfileEdit from '../Mypage/ProfileEdit';
 import ExhibitionListCreate from '../Exhibitions/ExhibitionListCreate';
+import ExhibitionReview from '../Exhibitions/ExhibitionReview';
 import HomePage from '../HomePage';
 import MyPage from '../Mypage/MyPage';
 import Layout from '../Components/Layout /Layout';
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
             {
                 path: 'exhibitions/:id',
                 element: <ExhibitionDetail />,
+            },
+            {
+                path: 'exhibitions/:id/reviews',
+                element: <ExhibitionReview />,
             },
 
             //공간 대여 관련 페이지 => 추후에 세부하게 설정하는 게 좋을 것 같으면 그렇게 수정할게요
