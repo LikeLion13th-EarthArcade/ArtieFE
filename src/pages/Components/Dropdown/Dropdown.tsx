@@ -21,11 +21,15 @@ const Dropdown: React.FC<DropdownProps> = ({ id, label, helperText, options, pla
     return (
         <div className="flex flex-col gap-4 relative w-full">
             {label && (
-                <span className="text-[20px] ml-1" style={{ color: 'var(--color-primary-300)' }}>
+                <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
                     {label}
                 </span>
             )}
-            {helperText && <span style={{ color: 'var(--color-default-gray-500)' }}>{helperText}</span>}
+            {helperText && (
+                <span className="text-sm" style={{ color: 'var(--color-default-gray-500)' }}>
+                    {helperText}
+                </span>
+            )}
             <div
                 className="rounded-lg p-3 w-full min-h-[50px] border flex justify-between items-center cursor-pointer"
                 style={{ border: `1px solid var(--color-primary-300)`, color: selected ? '' : 'var(--color-default-gray-600)' }}
@@ -41,7 +45,12 @@ const Dropdown: React.FC<DropdownProps> = ({ id, label, helperText, options, pla
                     style={{ border: `1px solid var(--color-primary-300)` }}
                 >
                     {options.map((option, idx) => (
-                        <div key={idx} className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-center" onClick={() => handleSelect(option)}>
+                        <div
+                            key={idx}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-center"
+                            style={{ color: 'var(--color-default-gray-700)' }}
+                            onClick={() => handleSelect(option)}
+                        >
                             {option}
                         </div>
                     ))}

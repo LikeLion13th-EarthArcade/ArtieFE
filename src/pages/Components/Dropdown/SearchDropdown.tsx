@@ -38,7 +38,7 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
     return (
         <div className="flex-1 h-full flex items-center justify-between pl-12 pr-8 relative" ref={dropdownRef}>
             <span
-                className={`text-[18px] select-none cursor-pointer text-center`}
+                className={`text-base select-none cursor-pointer text-center`}
                 style={{ color: 'var(--color-default-gray-700)' }}
                 onClick={() => setOpen(!open)}
             >
@@ -55,7 +55,7 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
                     setOpen((prev) => !prev);
                 }}
             >
-                <ChevronDown size={28} />
+                <ChevronDown size={26} />
             </button>
 
             {/* 옵션 리스트 */}
@@ -69,7 +69,7 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
                                     onChange(value === opt ? '' : opt);
                                     setOpen(false);
                                 }}
-                                className={`px-4 py-3 text-[18px] hover:bg-gray-100 cursor-pointer text-center border-b ${
+                                className={`px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer text-center border-b ${
                                     idx === options.length - 1 ? 'border-b-0' : ''
                                 }`}
                                 style={{
@@ -96,10 +96,10 @@ function SearchBtn({ onClick }: { onClick: () => void }) {
     return (
         <div
             onClick={onClick}
-            className="flex-shrink-0 w-[60px] h-[60px] flex items-center justify-center cursor-pointer shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-full"
+            className="flex-shrink-0 w-[45px] h-[45px] flex items-center justify-center cursor-pointer shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-full"
             style={{ backgroundColor: 'var(--color-primary-300)' }}
         >
-            <img src={SearchIcon} alt="검색 이미지" className="w-[25px] h-[25px] object-contain" />
+            <img src={SearchIcon} alt="검색 이미지" className="w-[20px] h-[20px] object-contain" />
         </div>
     );
 }
@@ -176,11 +176,17 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
     return (
         <div className="flex-1 h-full flex items-center justify-between px-8 relative" ref={dropdownRef}>
             {/* 날짜 이동 버튼 */}
-            <img src={LeftFilledArrow} alt="왼쪽" className="w-[28px] h-[28px] cursor-pointer" onClick={() => changeDate(-1)} />
-            <div className="flex items-center gap-2 text-[#636363] text-[18px] select-none cursor-pointer" onClick={() => setOpen(!open)}>
+            <img src={LeftFilledArrow} alt="왼쪽" className="w-[20px] h-[20px] cursor-pointer" onClick={() => changeDate(-1)} />
+            <div className="flex items-center gap-2 text-base select-none cursor-pointer" onClick={() => setOpen(!open)}>
                 <span>{formatDisplayDate(value)}</span>
             </div>
-            <img src={RightFilledArrow} alt="오른쪽" className="w-[28px] h-[28px] cursor-pointer" onClick={() => changeDate(1)} />
+            <img
+                src={RightFilledArrow}
+                alt="오른쪽"
+                className="w-[20px] h-[20px] cursor-pointer"
+                style={{ color: 'var(--color-default-gray-700)' }}
+                onClick={() => changeDate(1)}
+            />
 
             {/* 캘린더 팝업 */}
             {open && (
@@ -190,23 +196,23 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
                             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
                             className="p-1 cursor-pointer"
                         >
-                            <ChevronDown size={20} className="rotate-90" />
+                            <ChevronDown size={18} className="rotate-90" />
                         </button>
-                        <span className="text-lg font-medium">
+                        <span className="text-base font-medium">
                             {currentMonth.getFullYear()}년 {currentMonth.getMonth() + 1}월
                         </span>
                         <button
                             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
                             className="p-1 cursor-pointer"
                         >
-                            <ChevronDown size={20} className="-rotate-90" />
+                            <ChevronDown size={18} className="-rotate-90" />
                         </button>
                     </div>
 
                     {/* 요일 */}
                     <div className="grid grid-cols-7 gap-1 mb-2">
                         {['일', '월', '화', '수', '목', '금', '토'].map((d) => (
-                            <div key={d} className="text-center text-sm text-[#636363] py-2">
+                            <div key={d} className="text-center text-sm py-1" style={{ color: 'var(--color-default-gray-700)' }}>
                                 {d}
                             </div>
                         ))}
@@ -225,10 +231,11 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
                                         onChange(formatDate(day.date));
                                         setOpen(false);
                                     }}
-                                    className={`p-2 text-sm rounded hover:bg-gray-100 transition-colors cursor-pointer
-                                        ${!day.isCurrentMonth ? 'text-[#D9D9D9]' : 'text-[#636363]'}
-                                        ${isSelected ? 'bg-[#E45F5F] text-white' : ''}
-                                        ${isToday && !isSelected ? 'bg-gray-100' : ''}`}
+                                    className={`flex items-center justify-center w-7 h-7 text-sm rounded transition-colors cursor-pointer
+                                        ${!day.isCurrentMonth ? 'text-[var(--color-default-gray-400)]' : 'text-[var(--color-default-gray-700)]'}
+                                        ${isSelected ? 'bg-[var(--color-primary-300)] text-white' : ''}
+                                        ${isToday && !isSelected ? 'bg-[var(--color-default-gray-100)]' : ''}
+                                        hover:bg-[var(--color-default-gray-100)]`}
                                 >
                                     {day.date.getDate()}
                                 </button>
@@ -244,7 +251,7 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
 export default function SearchDropdown({ selectedOptions, onDropdownChange, dropdowns, onSearch }: DropdownProps) {
     return (
         <div className="flex justify-center items-center py-8 gap-6 w-[70%] mx-auto px-4">
-            <div className="w-full flex-1 max-w-[1365px] h-[70px] bg-white shadow-md rounded-[40px] flex items-center">
+            <div className="w-full flex-1 max-w-[1365px] h-[55px] bg-white shadow-md rounded-[40px] flex items-center">
                 {dropdowns.map((dd, idx) => (
                     <div key={dd.key} className="flex items-center h-full flex-1 min-w-0">
                         {dd.key !== 'date' ? (
