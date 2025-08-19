@@ -18,6 +18,7 @@ import ExhibitionSearch from '../Exhibitions/ExhibitionSearch';
 import AuthLayout from '../Components/Layout /AuthLayout';
 import Login from '../Auth/Login';
 import SignUp from '../Auth/SignUp';
+import SpaceReview from '../Spaces/SpaceReview';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
             {
                 path: 'spaces/:id',
                 element: <SpaceDetail />,
+            },
+            {
+                path: 'spaces/:id/review',
+                element: <SpaceReview />,
             },
 
             //마이페이지 관련
