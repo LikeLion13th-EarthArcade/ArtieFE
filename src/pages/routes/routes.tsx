@@ -19,7 +19,7 @@ import AuthLayout from '../Components/Layout /AuthLayout';
 import Login from '../Auth/Login';
 import SignUp from '../Auth/SignUp';
 import SpaceReview from '../Spaces/SpaceReview';
-import ReserveComplete from '../common/reserveComplete';
+import ReserveComplete from '../common/ReserveComplete';
 import ExhibitionPreview from '../Exhibitions/ExhibitionPreview';
 
 const router = createBrowserRouter([
@@ -97,7 +97,7 @@ const router = createBrowserRouter([
                 path: 'spaces/:id/reserveComplete',
                 element: <ReserveComplete />,
             },
-          
+
             //마이페이지 관련
             {
                 path: 'mypage',

@@ -204,29 +204,18 @@ export default function ExhibitionSearch() {
             {/* 정렬 메뉴 */}
             {filteredList.length > 0 && (
                 <div className="w-[70%] max-w-[1450px] mx-auto flex justify-end pr-2 mb-4">
-                    <div
-                        className="w-[110px] h-[35px] flex items-center justify-center select-none border rounded-xl"
-                        style={{
-                            color: 'var(--color-default-gray-600)',
-                            border: '1px solid var(--color-primary-300)',
-                        }}
-                    >
+                    <div className="w-[110px] h-[35px] text-default-gray-600 border border-primary-300 flex items-center justify-center select-none rounded-xl">
                         <div className="relative cursor-pointer select-none flex items-center w-[130px] px-2" onClick={toggleSortMenu}>
-                            <span className="flex-grow text-sm text-center font-semibold" style={{ color: 'var(--color-primary-300)' }}>
-                                {selectedSort}
-                            </span>
+                            <span className="flex-grow text-sm text-primary-300 text-center font-semibold">{selectedSort}</span>
                             <div className="flex-shrink-0 w-4 ml-1">
-                                <ChevronDown style={{ color: 'var(--color-primary-300)' }} size={16} />
+                                <ChevronDown className="text-primary-300" size={16} />
                             </div>
                             {isSortMenuOpen && (
-                                <ul
-                                    className="absolute top-full left-1/2 mt-4 w-[110px] text-sm bg-white border rounded-xl z-10 -translate-x-1/2 transform overflow-hidden"
-                                    style={{ border: '1px solid var(--color-primary-300)' }}
-                                >
+                                <ul className="absolute top-full left-1/2 mt-4 w-[110px] text-sm bg-white border border-primary-300 rounded-xl z-10 -translate-x-1/2 transform overflow-hidden">
                                     {sortOptions.map((option) => (
                                         <li
                                             key={option}
-                                            className={`px-4 py-2 hover:bg-[var(--color-default-gray-100)] cursor-pointer text-center ${option === selectedSort ? 'text-[var(--color-primary-300)]' : ''}`}
+                                            className={`px-4 py-2 hover:bg-default-gray-400 cursor-pointer text-center ${option === selectedSort ? 'text-primary-300' : ''}`}
                                             onClick={(e) => handleSortSelect(option, e)}
                                         >
                                             {option}
