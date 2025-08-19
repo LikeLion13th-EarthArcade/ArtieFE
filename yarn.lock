@@ -389,6 +389,42 @@
     "@eslint/core" "^0.15.1"
     levn "^0.4.1"
 
+"@floating-ui/core@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.7.3.tgz#462d722f001e23e46d86fd2bd0d21b7693ccb8b7"
+  integrity sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==
+  dependencies:
+    "@floating-ui/utils" "^0.2.10"
+
+"@floating-ui/dom@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.3.tgz#6174ac3409e6a064bbdf1f4bb07188ee9461f8cf"
+  integrity sha512-uZA413QEpNuhtb3/iIKoYMSK07keHPYeXF02Zhd6e213j+d1NamLix/mCLxBUDW/Gx52sPH2m+chlUsyaBs/Ag==
+  dependencies:
+    "@floating-ui/core" "^1.7.3"
+    "@floating-ui/utils" "^0.2.10"
+
+"@floating-ui/react-dom@^2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-2.1.5.tgz#d11e3726d2eb385d8cf3216348742907c1d49fcf"
+  integrity sha512-HDO/1/1oH9fjj4eLgegrlH3dklZpHtUYYFiVwMUwfGvk9jWDRWqkklA2/NFScknrcNSspbV868WjXORvreDX+Q==
+  dependencies:
+    "@floating-ui/dom" "^1.7.3"
+
+"@floating-ui/react@^0.27.15":
+  version "0.27.15"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react/-/react-0.27.15.tgz#1005b01e8de79ff98de9a93717bdd1bd4fcd1949"
+  integrity sha512-0LGxhBi3BB1DwuSNQAmuaSuertFzNAerlMdPbotjTVnvPtdOs7CkrHLaev5NIXemhzDXNC0tFzuseut7cWA5mw==
+  dependencies:
+    "@floating-ui/react-dom" "^2.1.5"
+    "@floating-ui/utils" "^0.2.10"
+    tabbable "^6.0.0"
+
+"@floating-ui/utils@^0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.10.tgz#a2a1e3812d14525f725d011a73eceb41fef5bc1c"
+  integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"
@@ -2295,6 +2331,24 @@ queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+
+react-clock@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/react-clock/-/react-clock-6.0.0.tgz#3ea6b61bac0edcaaac3cd5f3095f68cabc313c60"
+  integrity sha512-qYYrCT9HwDmj5Y2jFGPLc0ktQAZnm+1h2e429/8KBic69PuP1Cp2u0U8k5m3G8A09cOmikQFQitnX6STeGmTpA==
+  dependencies:
+    "@wojtekmaj/date-utils" "^2.0.2"
+    clsx "^2.0.0"
+    get-user-locale "^3.0.0"
+
+react-datepicker@^8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-8.5.0.tgz#25b39f394d8b2107d1333574301828d5ef73c1a0"
+  integrity sha512-GdKElMgEBgyAv2L5QjwvlStdZU8Nz76roBZ2rkpxFx8eIJ0SAHaAGckG8+FSi00EQnzKqA2N9qA61oxll8CyhA==
+  dependencies:
+    "@floating-ui/react" "^0.27.3"
+    clsx "^2.1.1"
+    date-fns "^4.1.0"
 
 react-daum-postcode@^3.2.0:
   version "3.2.0"
