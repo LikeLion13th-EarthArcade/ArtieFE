@@ -17,7 +17,7 @@ export default function ExhibitionMiniCard({ ex }: ExhibitionMiniCardProps) {
             <div className="mt-2 grid grid-rows-2 gap-1">
                 <div className="flex items-start gap-3">
                     <span
-                        className="w-[81px] flex-shrink-0 text-white px-2 py-1 rounded-[10px] text-center"
+                        className="w-[75px] flex-shrink-0 text-white px-2 py-1 rounded-[10px] text-center"
                         style={{ backgroundColor: 'var(--color-primary-200)' }}
                     >
                         기간
@@ -26,7 +26,7 @@ export default function ExhibitionMiniCard({ ex }: ExhibitionMiniCardProps) {
                 </div>
                 <div className="flex items-start gap-3">
                     <span
-                        className="w-[81px] flex-shrink-0 text-white px-2 py-1 rounded-[10px] text-center"
+                        className="w-[75px] flex-shrink-0 text-white px-2 py-1 rounded-[10px] text-center"
                         style={{ backgroundColor: 'var(--color-primary-200)' }}
                     >
                         장소
