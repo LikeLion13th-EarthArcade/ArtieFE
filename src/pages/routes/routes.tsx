@@ -20,6 +20,7 @@ import Login from '../Auth/Login';
 import SignUp from '../Auth/SignUp';
 import SpaceReview from '../Spaces/SpaceReview';
 import ReserveComplete from '../common/reserveComplete';
+import ExhibitionPreview from '../Exhibitions/ExhibitionPreview';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
                 element: <ExhibitionListCreate />,
             },
             {
+                path: 'exhibitions/preview/:id',
+                element: <ExhibitionPreview />,
+            },
+            {
                 path: 'exhibitions/:id',
                 element: <ExhibitionDetail />,
             },
@@ -92,7 +97,7 @@ const router = createBrowserRouter([
                 path: 'spaces/:id/reserveComplete',
                 element: <ReserveComplete />,
             },
-
+          
             //마이페이지 관련
             {
                 path: 'mypage',

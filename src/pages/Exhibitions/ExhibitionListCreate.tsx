@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronDown, X } from 'lucide-react';
 import DaumPostcode from 'react-daum-postcode';
 import type { Address } from 'react-daum-postcode';
@@ -27,6 +27,13 @@ export default function ExhibitionListCreate() {
     const [detailAddress, setDetailAddress] = useState('');
     const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
 
+    // 시설 옵션
+    const [facilities, setFacilities] = useState({
+        wifi: false,
+        restroom: false,
+        stroller: false,
+    });
+
     // 드롭다운 관리
     const [openId, setOpenId] = useState('');
     const handleToggle = (id: string) => {
@@ -41,12 +48,43 @@ export default function ExhibitionListCreate() {
         price: '',
         time: '',
         link: '',
+        startTime: '',
+        endTime: '',
+        dayOff: [] as string[],
+        holidayClosed: false,
     });
 
     // 모달 스텝 관리
     const [step, setStep] = useState<0 | 1 | null>(null); // null: 닫힘, 0: 첫번째 모달, 1: 두번째 모달
     const navigate = useNavigate();
     const closeModal = () => setStep(null);
+
+    const location = useLocation();
+    const prevData = location.state; // Preview에서 돌아온 값
+
+    useEffect(() => {
+        if (prevData) {
+            setTitle(prevData.title);
+            setDescription(prevData.description);
+            setImageFiles(prevData.imageFiles);
+            setStartDate(prevData.startDate);
+            setEndDate(prevData.endDate);
+            setAddress(prevData.address);
+            setDetailAddress(prevData.detailAddress);
+            setSelectedValues({
+                ...prevData.selectedValues,
+                dayOff: Array.isArray(prevData.selectedValues?.dayOff) ? prevData.selectedValues.dayOff : [],
+            });
+            if (prevData.selectedValues?.facilities) {
+                const selectedFacilities: string[] = prevData.selectedValues.facilities;
+                setFacilities({
+                    wifi: selectedFacilities.includes('와이파이'),
+                    restroom: selectedFacilities.includes('화장실'),
+                    stroller: selectedFacilities.includes('유모차 대여'),
+                });
+            }
+        }
+    }, [prevData]);
 
     // 이미지 업로드 처리 (최대 3개)
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,10 +94,30 @@ export default function ExhibitionListCreate() {
         setImageFiles(newFiles);
     };
 
+    // 운영 시간 옵션 생성
+    const timeOptions = Array.from({ length: 48 }, (_, i) => {
+        const hours = String(Math.floor(i / 2)).padStart(2, '0');
+        const minutes = i % 2 === 0 ? '00' : '30';
+        return `${hours}:${minutes}`;
+    });
+
+    const timeToMinutes = (time: string) => {
+        const [h, m] = time.split(':').map(Number);
+        return h * 60 + m;
+    };
+
     // 주소 선택 완료
     const handleComplete = (data: Address) => {
         setAddress(data.address); // 선택한 주소 입력
         setIsPostcodeOpen(false); // 검색창 닫기
+    };
+
+    // 시설 옵션 체크박스 핸들러
+    const handleFacilityChange = (facility: keyof typeof facilities) => {
+        setFacilities((prev) => ({
+            ...prev,
+            [facility]: !prev[facility],
+        }));
     };
 
     // 폼 유효성 검사
@@ -96,9 +154,7 @@ export default function ExhibitionListCreate() {
                 <div className="flex flex-col">
                     {/* 전시 제목 */}
                     <div className="flex flex-col gap-4">
-                        <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                            전시 제목
-                        </span>
+                        <span className="text-lg text-primary-300 ml-1">전시 제목</span>
                         <input
                             type="text"
                             value={title}
@@ -109,19 +165,14 @@ export default function ExhibitionListCreate() {
                                 }
                             }}
                             placeholder='전시의 이름을 입력해주세요. (예: "빛과 그림자의 대화")'
-                            className="rounded-lg p-3 w-full min-h-[50px] placeholder-[var(--color-default-gray-600)] focus:outline-none focus:ring-0"
-                            style={{ border: `1px solid var(--color-primary-300)` }}
+                            className="rounded-lg p-3 w-full min-h-[50px] placeholder-default-gray-600 border border-primary-300 focus:outline-none focus:ring-0"
                             maxLength={20}
                         />
-                        <span className="text-sm text-right block mr-1" style={{ color: 'var(--color-default-gray-500)' }}>
-                            {title.length} /20
-                        </span>
+                        <span className="text-default-gray-500 text-sm text-right block mr-1">{title.length} /20</span>
                     </div>
                     {/* 전시 설명 */}
                     <div className="flex flex-col gap-4">
-                        <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                            전시 설명
-                        </span>
+                        <span className="text-lg text-primary-300 ml-1">전시 설명</span>
                         <div className="relative w-full min-h-[200px]">
                             <textarea
                                 value={description}
@@ -131,24 +182,19 @@ export default function ExhibitionListCreate() {
                                         setDescription(newValue);
                                     }
                                 }}
-                                className="placeholder-transparent rounded-lg p-3 w-full min-h-[200px] focus:outline-none focus:ring-0 resize-none"
-                                style={{ border: `1px solid var(--color-primary-300)` }}
+                                className="placeholder-transparent rounded-lg p-3 w-full min-h-[200px] border border-primary-300 focus:outline-none focus:ring-0 resize-none"
                                 maxLength={500}
                             />
 
                             {description.length === 0 && (
                                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-4">
                                     <img src={keyboard} alt="keyboard icon" className="w-9 h-9 mb-2" />
-                                    <span style={{ color: 'var(--color-default-gray-600)' }}>
-                                        전시의 취지, 주요 작품, 작가 소개 등을 자유롭게 작성해주세요.
-                                    </span>
+                                    <span className="text-default-gray-600">전시의 취지, 주요 작품, 작가 소개 등을 자유롭게 작성해주세요.</span>
                                 </div>
                             )}
                         </div>
 
-                        <span className="text-sm text-right block mr-1" style={{ color: 'var(--color-default-gray-500)' }}>
-                            {description.length} /500
-                        </span>
+                        <span className="text-default-gray-500 text-sm text-right block mr-1">{description.length} /500</span>
                     </div>
                 </div>
             ),
@@ -157,19 +203,16 @@ export default function ExhibitionListCreate() {
             title: '전시 이미지 업로드',
             content: (
                 <div className="flex flex-col gap-4">
-                    <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                        대표 이미지 등록
-                    </span>
+                    <span className="text-lg text-primary-300 ml-1">대표 이미지 등록</span>
                     <div
-                        className="rounded-lg p-3 w-full min-h-[200px] flex flex-col items-center justify-center cursor-pointer"
-                        style={{ border: `1px solid var(--color-primary-300)` }}
+                        className="rounded-lg p-3 w-full min-h-[200px] border border-primary-300 flex flex-col items-center justify-center cursor-pointer"
                         onClick={() => document.getElementById('fileInput')?.click()}
                     >
                         {imageFiles.length === 0 ? (
                             // 파일이 선택되지 않았을 때
                             <div className="flex flex-col items-center text-center">
                                 <img src={images} alt="images icon" className="w-9 h-9 mb-2" />
-                                <span style={{ color: 'var(--color-default-gray-600)' }}>
+                                <span className="text-default-gray-600">
                                     전시 분위기를 보여줄 수 있는 이미지를 업로드해주세요. <br /> 최대 5장까지 등록할 수 있어요.
                                 </span>
                             </div>
@@ -183,9 +226,7 @@ export default function ExhibitionListCreate() {
                         )}
                         <input type="file" accept="image/*" multiple onChange={handleImageChange} className="hidden" id="fileInput" />
                     </div>
-                    <span className="text-sm text-right block mr-1" style={{ color: 'var(--color-default-gray-500)' }}>
-                        {imageFiles.length} /5
-                    </span>
+                    <span className="text-default-gray-500 text-sm text-right block mr-1">{imageFiles.length} /5</span>
                 </div>
             ),
         },
@@ -195,31 +236,124 @@ export default function ExhibitionListCreate() {
                 <div className="flex flex-col gap-4">
                     {/* 전시 기간 */}
                     <div className="flex flex-col gap-4">
-                        <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                            전시 기간
-                        </span>
+                        <span className="text-lg text-primary-300 ml-1">전시 기간</span>
                         <div className="flex gap-3">
                             <DatePickerInput value={startDate} onChange={setStartDate} placeholder="시작일을 선택하세요" />
                             <span className="flex items-center">~</span>
                             <DatePickerInput value={endDate} onChange={setEndDate} placeholder="종료일을 선택하세요" />
                         </div>
-                        <span className="text-sm" style={{ color: 'var(--color-default-gray-500)' }}>
+                        <span className="text-sm text-default-gray-500">
                             전시 시작일과 종료일을 선택해주세요. <br /> (※ 종료일은 시작일보다 이후 날짜여야 합니다.)
                         </span>
                     </div>
+
                     {/* 운영 시간 */}
                     <div className="flex flex-col gap-4">
-                        <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                            운영 시간
-                        </span>
-                        <input
-                            type="text"
-                            value={selectedValues.time}
-                            onChange={(e) => setSelectedValues((prev) => ({ ...prev, time: e.target.value }))}
-                            placeholder="운영 시간을 입력해주세요. (예: 오전 11시 ~ 오후 7시)"
-                            className="rounded-lg p-3 w-full min-h-[50px] placeholder-[var(--color-default-gray-600)] focus:outline-none focus:ring-0"
-                            style={{ border: `1px solid var(--color-primary-300)` }}
-                        />
+                        <span className="text-lg text-primary-300 ml-1">운영 시간</span>
+                        <div className="flex gap-3">
+                            <div className="relative">
+                                <Dropdown
+                                    id="startTime"
+                                    placeholder="시작 시간"
+                                    options={timeOptions}
+                                    selected={selectedValues.startTime}
+                                    isOpen={openId === 'startTime'}
+                                    onToggle={handleToggle}
+                                    onChange={(value) =>
+                                        setSelectedValues((prev) => {
+                                            if (prev.endTime && timeToMinutes(prev.endTime) < timeToMinutes(value)) {
+                                                return { ...prev, startTime: value, endTime: '' };
+                                            }
+                                            return { ...prev, startTime: value };
+                                        })
+                                    }
+                                />
+                            </div>
+                            <span className="flex items-center">~</span>
+                            <div className="relative">
+                                <Dropdown
+                                    id="endTime"
+                                    placeholder="종료 시간"
+                                    options={timeOptions}
+                                    selected={selectedValues.endTime}
+                                    isOpen={openId === 'endTime'}
+                                    onToggle={handleToggle}
+                                    onChange={(value) =>
+                                        setSelectedValues((prev) => {
+                                            if (!prev.startTime || timeToMinutes(value) >= timeToMinutes(prev.startTime)) {
+                                                return { ...prev, endTime: value };
+                                            }
+                                            alert('종료 시간은 시작 시간 이후여야 합니다!');
+                                            return prev;
+                                        })
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 정기 휴무 */}
+                    <div className="flex flex-col gap-4">
+                        <span className="text-lg text-primary-300 ml-1">정기 휴무</span>
+                        <span className="text-sm text-default-gray-500 ml-1">정기 휴무일이 없는 경우 선택하지 않으셔도 됩니다.</span>
+                        <div className="flex flex-wrap gap-4">
+                            {['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'].map((day) => (
+                                <label key={day} className="flex items-center text-default-gray-700 ml-1 gap-2 cursor-pointer">
+                                    <div className="relative flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            className="w-5 h-5 appearance-none border border-primary-300 rounded checked:bg-primary-300 checked:border-primary-300 cursor-pointer"
+                                            checked={selectedValues.dayOff.includes(day)}
+                                            onChange={(e) =>
+                                                setSelectedValues((prev) => {
+                                                    const newDays = e.target.checked ? [...prev.dayOff, day] : prev.dayOff.filter((d) => d !== day);
+                                                    return { ...prev, dayOff: newDays };
+                                                })
+                                            }
+                                        />
+                                        {selectedValues.dayOff.includes(day) && (
+                                            <svg
+                                                className="absolute top-0.5 left-0.5 w-4 h-4 text-white pointer-events-none"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2.5"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        )}
+                                    </div>
+                                    {day}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* 공휴일 휴관 */}
+                    <div className="flex items-center gap-2 mt-2 ml-1">
+                        <div className="relative flex items-center">
+                            <input
+                                type="checkbox"
+                                id="holidayClosed"
+                                checked={selectedValues.holidayClosed}
+                                onChange={(e) => setSelectedValues((prev) => ({ ...prev, holidayClosed: e.target.checked }))}
+                                className="w-5 h-5 appearance-none border border-primary-300 rounded checked:bg-primary-300 checked:border-primary-300 cursor-pointer"
+                            />
+                            {selectedValues.holidayClosed && (
+                                <svg
+                                    className="absolute top-0.5 left-0.5 w-4 h-4 text-white pointer-events-none"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                            )}
+                        </div>
+                        <label htmlFor="holidayClosed" className="text-default-gray-700 cursor-pointer">
+                            공휴일 휴관
+                        </label>
                     </div>
                 </div>
             ),
@@ -229,16 +363,10 @@ export default function ExhibitionListCreate() {
             content: (
                 <div className="flex flex-col gap-4">
                     <div className="flex justify-between mx-1">
-                        <span className="text-lg" style={{ color: 'var(--color-primary-300)' }}>
-                            전시 공간 위치
-                        </span>
+                        <span className="text-lg text-primary-300">전시 공간 위치</span>
                         <button
                             onClick={() => setIsPostcodeOpen(true)}
-                            className="text-sm rounded-3xl px-4 py-1 cursor-pointer"
-                            style={{
-                                color: 'var(--color-default-gray-700)',
-                                border: `1px solid var(--color-default-gray-500)`,
-                            }}
+                            className="text-sm text-default-gray-700 border border-default-gray-600 rounded-3xl px-4 py-1 cursor-pointer"
                         >
                             주소 검색
                         </button>{' '}
@@ -248,31 +376,24 @@ export default function ExhibitionListCreate() {
                         value={address}
                         placeholder="전시장 주소를 입력해주세요."
                         readOnly
-                        className="rounded-lg p-3 w-full min-h-[50px] placeholder-[var(--color-default-gray-600)] focus:outline-none focus:ring-0"
-                        style={{
-                            border: `1px solid var(--color-primary-300)`,
-                        }}
+                        className="rounded-lg p-3 w-full min-h-[50px] border border-primary-300 placeholder-default-gray-600 focus:outline-none focus:ring-0"
                     />
                     <input
                         type="text"
                         value={detailAddress}
                         onChange={(e) => setDetailAddress(e.target.value)}
                         placeholder="상세주소를 입력해주세요."
-                        className="rounded-lg p-3 w-full min-h-[50px] placeholder-[var(--color-default-gray-600)] focus:outline-none focus:ring-0"
-                        style={{
-                            border: `1px solid var(--color-primary-300)`,
-                        }}
+                        className="rounded-lg p-3 w-full min-h-[50px] border border-primary-300 placeholder-default-gray-600 focus:outline-none focus:ring-0"
                     />
 
                     {isPostcodeOpen && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-                            <div className="w-[450px] relative bg-white p-3 rounded-lg shadow-lg" style={{ border: `1px solid var(--color-primary-300)` }}>
+                            <div className="w-[450px] relative bg-white p-3 rounded-lg shadow-lg border border-primary-300">
                                 <DaumPostcode onComplete={handleComplete} autoClose={false} />
                                 <div className="flex justify-end">
                                     <button
                                         onClick={() => setIsPostcodeOpen(false)}
-                                        className="px-4 py-2 m-2 text-white rounded-lg cursor-pointer"
-                                        style={{ backgroundColor: 'var(--color-primary-300)' }}
+                                        className="px-4 py-2 m-2 text-white bg-primary-300 rounded-lg cursor-pointer"
                                     >
                                         닫기
                                     </button>
@@ -331,21 +452,35 @@ export default function ExhibitionListCreate() {
             title: '시설•옵션',
             content: (
                 <div className="flex flex-col gap-4">
-                    <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                        기타(선택)
-                    </span>
-                    <div
-                        className="flex items-center gap-3 rounded-lg p-3 w-full min-h-[50px] focus:outline-none focus:ring-0 flex-nowrap"
-                        style={{ border: `1px solid var(--color-primary-300)` }}
-                    >
+                    <span className="text-lg text-primary-300 ml-1">기타(선택)</span>
+                    <div className="flex flex-wrap justify-evenly items-center gap-3 rounded-lg p-3 w-full min-h-[50px] border border-primary-300 focus:outline-none focus:ring-0">
                         <label className="flex items-center gap-3 whitespace-nowrap">
-                            <input type="checkbox" className="accent-[var(--color-primary-300)]" /> 와이파이
+                            와이파이
+                            <input type="checkbox" className="accent-primary-300" checked={facilities.wifi} onChange={() => handleFacilityChange('wifi')} />
                         </label>
 
-                        <div className="w-px h-6" style={{ backgroundColor: 'var(--color-default-gray-500)' }}></div>
+                        <div className="w-px h-6 bg-default-gray-500"></div>
 
                         <label className="flex items-center gap-3 whitespace-nowrap">
-                            <input type="checkbox" className="accent-[var(--color-primary-300)]" /> 화장실
+                            화장실
+                            <input
+                                type="checkbox"
+                                className="accent-primary-300"
+                                checked={facilities.restroom}
+                                onChange={() => handleFacilityChange('restroom')}
+                            />
+                        </label>
+
+                        <div className="w-px h-6 bg-default-gray-500"></div>
+
+                        <label className="flex items-center gap-3 whitespace-nowrap">
+                            유모차 대여
+                            <input
+                                type="checkbox"
+                                className="accent-primary-300"
+                                checked={facilities.stroller}
+                                onChange={() => handleFacilityChange('stroller')}
+                            />
                         </label>
                     </div>
                 </div>
@@ -372,10 +507,7 @@ export default function ExhibitionListCreate() {
                             <input
                                 type="text"
                                 placeholder="가격을 입력해주세요."
-                                className="rounded-lg p-3 w-full min-h-[50px] placeholder-[var(--color-default-gray-600)] focus:outline-none focus:ring-0"
-                                style={{
-                                    border: `1px solid var(--color-primary-300)`,
-                                }}
+                                className="rounded-lg p-3 w-full min-h-[50px] border border-primary-300 placeholder-default-gray-600 focus:outline-none focus:ring-0"
                                 onChange={(e) =>
                                     setSelectedValues((prev) => ({
                                         ...prev,
@@ -387,16 +519,13 @@ export default function ExhibitionListCreate() {
                     </div>
                     {/* 연결 링크 */}
                     <div className="flex flex-col gap-4">
-                        <span className="text-lg ml-1" style={{ color: 'var(--color-primary-300)' }}>
-                            연결 링크
-                        </span>
+                        <span className="text-lg text-primary-300 ml-1">연결 링크</span>
                         <input
                             type="text"
                             value={selectedValues.link}
                             onChange={(e) => setSelectedValues((prev) => ({ ...prev, link: e.target.value }))}
                             placeholder="더 많은 정보를 볼 수 있는 웹사이트, SNS, 예매처 링크 등을 입력해주세요."
-                            className="rounded-lg p-3 w-full min-h-[50px] placeholder-[var(--color-default-gray-600)] focus:outline-none focus:ring-0"
-                            style={{ border: `1px solid var(--color-primary-300)` }}
+                            className="rounded-lg p-3 w-full min-h-[50px] border border-primary-300 placeholder-default-gray-600 focus:outline-none focus:ring-0"
                         />
                     </div>
                 </div>
@@ -417,10 +546,7 @@ export default function ExhibitionListCreate() {
                 <div key={index} className="flex flex-col gap-4 w-full max-w-[1040px]">
                     <div className="flex items-center gap-3">
                         {/* 번호 */}
-                        <div
-                            className="w-[27px] h-[27px] rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: 'var(--color-primary-300)' }}
-                        >
+                        <div className="w-[27px] h-[27px] bg-primary-300 rounded-full flex items-center justify-center">
                             <span className="text-white font-bold">{index + 1}</span>
                         </div>
                         {/* 제목 */}
@@ -434,11 +560,31 @@ export default function ExhibitionListCreate() {
             <div className="flex gap-6 mt-12 justify-center">
                 {/* 미리보기 버튼 */}
                 <button
-                    className="w-[170px] h-[60px] rounded-[50px] bg-white text-lg"
-                    style={{
-                        color: 'var(--color-primary-300)',
-                        border: `1px solid var(--color-primary-300)`,
-                    }}
+                    className="w-[170px] h-[60px] rounded-[50px] bg-white text-lg text-primary-300 border border-primary-300"
+                    onClick={() =>
+                        navigate('/exhibitions/preview/1', {
+                            state: {
+                                title,
+                                description,
+                                imageFiles,
+                                startDate,
+                                endDate,
+                                address,
+                                detailAddress,
+                                selectedValues: {
+                                    ...selectedValues,
+                                    facilities: Object.entries(facilities)
+                                        .filter(([, checked]) => checked)
+                                        .map(([key]) => {
+                                            if (key === 'wifi') return '와이파이';
+                                            if (key === 'restroom') return '화장실';
+                                            if (key === 'stroller') return '유모차 대여';
+                                            return key;
+                                        }),
+                                },
+                            },
+                        })
+                    }
                 >
                     미리보기
                 </button>
@@ -461,13 +607,7 @@ export default function ExhibitionListCreate() {
                     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
                         <div className="bg-white w-[450px] p-8 rounded-2xl relative shadow-lg">
                             {/* 닫기 버튼 */}
-                            <button
-                                onClick={closeModal}
-                                className="absolute top-4 right-4 transition-colors"
-                                style={{ color: 'var(--color-default-gray-500)' }}
-                                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-default-gray-800)')}
-                                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-default-gray-500)')}
-                            >
+                            <button onClick={closeModal} className="absolute top-4 right-4 text-default-gray-500">
                                 <X size={20} />
                             </button>
 
@@ -477,16 +617,12 @@ export default function ExhibitionListCreate() {
                                 <br />
                                 승인까지 영업일 기준 2~3일 소요될 수 있습니다.
                                 <br />
-                                <span style={{ color: 'var(--color-default-gray-600)' }}>승인 후 마이페이지에서 수정/삭제 가능합니다.</span>
+                                <span className="text-default-gray-600">승인 후 마이페이지에서 수정/삭제 가능합니다.</span>
                             </p>
 
                             {/* 확인 버튼 */}
                             <div className="flex justify-center">
-                                <button
-                                    className="px-6 py-2 rounded-full text-white"
-                                    style={{ backgroundColor: 'var(--color-primary-300)' }}
-                                    onClick={() => setStep(1)}
-                                >
+                                <button className="px-6 py-2 rounded-full text-white bg-primary-300" onClick={() => setStep(1)}>
                                     확인
                                 </button>
                             </div>
@@ -499,7 +635,7 @@ export default function ExhibitionListCreate() {
                     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
                         <div className="bg-white w-[450px] p-8 rounded-2xl relative shadow-lg">
                             {/* 닫기 버튼 */}
-                            <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                            <button onClick={closeModal} className="absolute top-4 right-4 text-default-gray-500">
                                 <X size={20} />
                             </button>
 
@@ -512,11 +648,7 @@ export default function ExhibitionListCreate() {
 
                             {/* 확인 버튼 */}
                             <div className="flex justify-center">
-                                <button
-                                    className="px-6 py-2 rounded-full text-white"
-                                    style={{ backgroundColor: 'var(--color-primary-300)' }}
-                                    onClick={() => navigate('/')}
-                                >
+                                <button className="px-6 py-2 rounded-full text-white bg-primary-300" onClick={() => navigate('/')}>
                                     확인
                                 </button>
                             </div>
@@ -681,8 +813,7 @@ function DatePickerInput({
 
                 {/* 현재 선택된 날짜 표시 및 클릭 시 달력 열기/닫기 */}
                 <div
-                    className="flex items-center gap-2 select-none cursor-pointer"
-                    style={{ color: value ? '' : 'var(--color-default-gray-600)' }}
+                    className={`flex items-center gap-2 select-none cursor-pointer ${!value ? 'text-default-gray-600' : 'text-black'}`}
                     onClick={() => setOpen(!open)}
                 >
                     <span>{formatDisplayDate(value)}</span>
@@ -714,7 +845,7 @@ function DatePickerInput({
                     {/* 요일 헤더 */}
                     <div className="grid grid-cols-7 gap-1">
                         {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-                            <div key={day} className="text-center text-sm py-2" style={{ color: 'var(--color-default-gray-700)' }}>
+                            <div key={day} className="text-default-gray-700 text-center text-sm py-2">
                                 {day}
                             </div>
                         ))}
