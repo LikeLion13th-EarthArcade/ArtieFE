@@ -37,19 +37,14 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
 
     return (
         <div className="flex-1 h-full flex items-center justify-between pl-12 pr-8 relative" ref={dropdownRef}>
-            <span
-                className={`text-base select-none cursor-pointer text-center`}
-                style={{ color: 'var(--color-default-gray-700)' }}
-                onClick={() => setOpen(!open)}
-            >
+            <span className="text-base select-none cursor-pointer text-default-gray-700 text-center" onClick={() => setOpen(!open)}>
                 {value || label}
             </span>
 
             {/* 화살표 아이콘 */}
             <button
                 type="button"
-                className={`transition-transform duration-200 cursor-pointer ${open ? 'rotate-180' : 'rotate-0'}`}
-                style={{ color: 'var(--color-default-gray-700)' }}
+                className={`text-default-gray-700 transition-transform duration-200 cursor-pointer ${open ? 'rotate-180' : 'rotate-0'}`}
                 onClick={(e) => {
                     e.stopPropagation();
                     setOpen((prev) => !prev);
@@ -69,13 +64,9 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
                                     onChange(value === opt ? '' : opt);
                                     setOpen(false);
                                 }}
-                                className={`px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer text-center border-b ${
-                                    idx === options.length - 1 ? 'border-b-0' : ''
-                                }`}
-                                style={{
-                                    color: value === opt ? 'var(--color-primary-300)' : 'var(--color-default-gray-700)',
-                                    borderColor: 'var(--color-default-gray-400)',
-                                }}
+                                className={`px-4 py-3 text-sm cursor-pointer text-center border-b border-default-gray-400
+                                    ${idx === options.length - 1 ? 'border-b-0' : ''} ${value === opt ? 'text-primary-300' : 'text-default-gray-700'} 
+                                hover:bg-default-gray-100`}
                             >
                                 {opt}
                             </div>
@@ -88,7 +79,7 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
 }
 // 구분선
 function Divider() {
-    return <div className="w-[1px] h-[60%]" style={{ backgroundColor: 'var(--color-default-gray-400)' }} />;
+    return <div className="w-[1px] h-[60%] bg-default-gray-400" />;
 }
 
 // 검색 버튼
@@ -96,8 +87,7 @@ function SearchBtn({ onClick }: { onClick: () => void }) {
     return (
         <div
             onClick={onClick}
-            className="flex-shrink-0 w-[45px] h-[45px] flex items-center justify-center cursor-pointer shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-full"
-            style={{ backgroundColor: 'var(--color-primary-300)' }}
+            className="flex-shrink-0 w-[45px] h-[45px] bg-primary-300 flex items-center justify-center cursor-pointer shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-full"
         >
             <img src={SearchIcon} alt="검색 이미지" className="w-[20px] h-[20px] object-contain" />
         </div>
@@ -180,13 +170,7 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
             <div className="flex items-center gap-2 text-base select-none cursor-pointer" onClick={() => setOpen(!open)}>
                 <span>{formatDisplayDate(value)}</span>
             </div>
-            <img
-                src={RightFilledArrow}
-                alt="오른쪽"
-                className="w-[20px] h-[20px] cursor-pointer"
-                style={{ color: 'var(--color-default-gray-700)' }}
-                onClick={() => changeDate(1)}
-            />
+            <img src={RightFilledArrow} alt="오른쪽" className="w-[20px] h-[20px] cursor-pointer" onClick={() => changeDate(1)} />
 
             {/* 캘린더 팝업 */}
             {open && (
@@ -212,7 +196,7 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
                     {/* 요일 */}
                     <div className="grid grid-cols-7 gap-1 mb-2">
                         {['일', '월', '화', '수', '목', '금', '토'].map((d) => (
-                            <div key={d} className="text-center text-sm py-1" style={{ color: 'var(--color-default-gray-700)' }}>
+                            <div key={d} className="text-default-gray-700 text-center text-sm py-1">
                                 {d}
                             </div>
                         ))}
@@ -232,10 +216,10 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
                                         setOpen(false);
                                     }}
                                     className={`flex items-center justify-center w-7 h-7 text-sm rounded transition-colors cursor-pointer
-                                        ${!day.isCurrentMonth ? 'text-[var(--color-default-gray-400)]' : 'text-[var(--color-default-gray-700)]'}
-                                        ${isSelected ? 'bg-[var(--color-primary-300)] text-white' : ''}
-                                        ${isToday && !isSelected ? 'bg-[var(--color-default-gray-100)]' : ''}
-                                        hover:bg-[var(--color-default-gray-100)]`}
+                                        ${!day.isCurrentMonth ? 'text-default-gray-400' : 'text-default-gray-700'}
+                                        ${isSelected ? 'bg-primary-300 text-white' : ''}
+                                        ${isToday && !isSelected ? 'bg-default-gray-400' : ''}
+                                        hover:bg-default-gray-400`}
                                 >
                                     {day.date.getDate()}
                                 </button>
