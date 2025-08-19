@@ -90,7 +90,7 @@ export default function ExhibitionListCreate() {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         const filesArray = Array.from(e.target.files);
-        const newFiles = [...imageFiles, ...filesArray].slice(0, 3);
+        const newFiles = [...imageFiles, ...filesArray].slice(0, 5);
         setImageFiles(newFiles);
     };
 
@@ -126,6 +126,15 @@ export default function ExhibitionListCreate() {
         if (!description.trim()) return (alert('전시 설명을 입력해주세요.'), false);
         if (imageFiles.length === 0) return (alert('대표 이미지를 최소 1장 등록해주세요.'), false);
         if (!startDate || !endDate) return (alert('전시 기간을 선택해주세요.'), false);
+
+        // 종료일이 시작일보다 이전인 경우 체크
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if (end < start) {
+            alert('종료일은 시작일보다 이후 날짜여야 합니다.');
+            return false;
+        }
+
         if (!address.trim()) return (alert('전시장 주소를 입력해주세요.'), false);
         if (!selectedValues.type) return (alert('전시 유형을 선택해주세요.'), false);
         if (!selectedValues.form) return (alert('전시 형태를 선택해주세요.'), false);
@@ -525,23 +534,23 @@ export default function ExhibitionListCreate() {
     ];
 
     return (
-        <div className="flex flex-col items-center w-[80%] p-10 gap-10 mx-auto">
+        <div className="flex flex-col items-center w-[70%] p-10 gap-10 mx-auto">
             {/* 상단 타이틀 */}
-            <div className="flex items-center gap-4 w-full max-w-[1040px]">
-                <img src={exhibitionIcon} alt="exhibition" className="w-[35px] h-[35px]" />
-                <span className="text-[35px] font-bold">전시 등록하기</span>
+            <div className="flex items-center gap-3 w-full max-w-[1040px]">
+                <img src={exhibitionIcon} alt="exhibition" className="w-[30px] h-[30px]" />
+                <span className="text-3xl font-bold">전시 등록하기</span>
             </div>
 
             {/* 섹션 반복 */}
             {sections.map((section, index) => (
                 <div key={index} className="flex flex-col gap-4 w-full max-w-[1040px]">
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-center gap-3">
                         {/* 번호 */}
                         <div className="w-[27px] h-[27px] bg-primary-300 rounded-full flex items-center justify-center">
                             <span className="text-white font-bold">{index + 1}</span>
                         </div>
                         {/* 제목 */}
-                        <span className="text-[25px] font-bold">{section.title}</span>
+                        <span className="text-2xl font-bold">{section.title}</span>
                     </div>
                     {section.content}
                 </div>
@@ -596,14 +605,14 @@ export default function ExhibitionListCreate() {
                 {/* 첫 번째 모달 */}
                 {step === 0 && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-                        <div className="bg-white w-[500px] p-8 rounded-2xl relative shadow-lg">
+                        <div className="bg-white w-[450px] p-8 rounded-2xl relative shadow-lg">
                             {/* 닫기 버튼 */}
                             <button onClick={closeModal} className="absolute top-4 right-4 text-default-gray-500">
                                 <X size={20} />
                             </button>
 
                             {/* 내용 */}
-                            <p className="text-center text-lg mb-6 leading-relaxed">
+                            <p className="text-center text-base mb-6 leading-relaxed">
                                 전시 등록은 검토 후 승인됩니다.
                                 <br />
                                 승인까지 영업일 기준 2~3일 소요될 수 있습니다.
@@ -624,14 +633,14 @@ export default function ExhibitionListCreate() {
                 {/* 두 번째 모달 */}
                 {step === 1 && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-                        <div className="bg-white w-[500px] p-8 rounded-2xl relative shadow-lg">
+                        <div className="bg-white w-[450px] p-8 rounded-2xl relative shadow-lg">
                             {/* 닫기 버튼 */}
                             <button onClick={closeModal} className="absolute top-4 right-4 text-default-gray-500">
                                 <X size={20} />
                             </button>
 
                             {/* 내용 */}
-                            <p className="text-center text-lg mb-6 leading-relaxed">
+                            <p className="text-center text-base mb-6 leading-relaxed">
                                 전시가 정상적으로 등록되었습니다!
                                 <br />
                                 승인 결과는 마이페이지에서 확인할 수 있습니다.
@@ -651,7 +660,19 @@ export default function ExhibitionListCreate() {
     );
 }
 
-function DatePickerInput({ value, onChange, placeholder }: { value: string; onChange: (date: string) => void; placeholder: string }) {
+function DatePickerInput({
+    value,
+    onChange,
+    placeholder,
+    startDate,
+    isEndDate = false,
+}: {
+    value: string;
+    onChange: (date: string) => void;
+    placeholder: string;
+    startDate?: string;
+    isEndDate?: boolean;
+}) {
     const [open, setOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -683,6 +704,28 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
         return `${y}.${m}.${d}`;
     };
 
+    // 날짜가 선택 가능한지 확인하는 함수
+    const isDateDisabled = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 과거 날짜는 비활성화
+        if (date < today) {
+            return true;
+        }
+
+        // 종료일의 경우 시작일보다 이전 날짜는 비활성화
+        if (isEndDate && startDate) {
+            const start = new Date(startDate);
+            start.setHours(0, 0, 0, 0);
+            if (date < start) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
     // 날짜를 offset 만큼 변경하여 onChange 호출
     const changeDate = (offset: number) => {
         let currentDate;
@@ -693,8 +736,15 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
             currentDate = new Date();
         }
         currentDate.setHours(0, 0, 0, 0);
-        currentDate.setDate(currentDate.getDate() + offset);
-        onChange(formatDate(currentDate));
+
+        // 새로운 날짜 계산
+        const newDate = new Date(currentDate);
+        newDate.setDate(newDate.getDate() + offset);
+
+        // 선택 가능한 날짜인지 확인
+        if (!isDateDisabled(newDate)) {
+            onChange(formatDate(newDate));
+        }
     };
 
     // 주어진 월의 날짜 배열 생성
@@ -702,31 +752,32 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
         const year = date.getFullYear();
         const month = date.getMonth();
 
-        // 해당 월의 첫째 날과 마지막 날 계산
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
-
-        // 첫째 날의 요일 (0:일요일, 1:월요일, ...)
-        const startDate = firstDay.getDay();
+        const startDayOfWeek = firstDay.getDay();
 
         const days = [];
 
-        // 이전 달 마지막 날짜들 (달력 앞부분 빈칸 채우기용)
-        for (let i = 0; i < startDate; i++) {
-            const prevDate = new Date(year, month, -startDate + i + 1);
-            days.push({ date: prevDate, isCurrentMonth: false });
+        // 이전 달 마지막 날짜들
+        for (let i = 0; i < startDayOfWeek; i++) {
+            const prevDate = new Date(year, month, -startDayOfWeek + i + 1);
+            days.push({ date: prevDate, isCurrentMonth: false, isDisabled: true });
         }
 
         // 현재 달 날짜들
         for (let i = 1; i <= daysInMonth; i++) {
-            days.push({ date: new Date(year, month, i), isCurrentMonth: true });
+            const d = new Date(year, month, i);
+            days.push({ date: d, isCurrentMonth: true, isDisabled: isDateDisabled(d) });
         }
 
         return days;
     };
+
     // 사용자가 날짜 클릭 시 선택 처리 및 드롭다운 닫기
     const handleDateSelect = (date: Date) => {
+        if (isDateDisabled(date)) return;
+
         const year = date.getFullYear();
         const month = date.getMonth();
         const day = date.getDate();
@@ -758,7 +809,7 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
                 style={{ border: `1px solid var(--color-primary-300)` }}
             >
                 {/* 왼쪽 화살표 */}
-                <img src={LeftFilledArrow} alt="왼쪽 화살표" className="w-[20px] h-[20px] cursor-pointer" onClick={() => changeDate(-1)} />
+                <img src={LeftFilledArrow} alt="왼쪽 화살표" className="w-[18px] h-[18px] cursor-pointer" onClick={() => changeDate(-1)} />
 
                 {/* 현재 선택된 날짜 표시 및 클릭 시 달력 열기/닫기 */}
                 <div
@@ -769,7 +820,7 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
                 </div>
 
                 {/* 오른쪽 화살표 */}
-                <img src={RightFilledArrow} alt="오른쪽 화살표" className="w-[20px] h-[20px] cursor-pointer" onClick={() => changeDate(1)} />
+                <img src={RightFilledArrow} alt="오른쪽 화살표" className="w-[18px] h-[18px] cursor-pointer" onClick={() => changeDate(1)} />
             </div>
 
             {/* 달력 드롭다운 */}
@@ -779,7 +830,7 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
                     style={{ border: `1px solid var(--color-primary-300)` }}
                 >
                     {/* 달력 헤더 */}
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between">
                         <button onClick={() => changeMonth(-1)} className="p-1 cursor-pointer">
                             <ChevronDown size={18} className="rotate-90" style={{ color: 'var(--color-default-gray-700)' }} />
                         </button>
@@ -792,7 +843,7 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
                     </div>
 
                     {/* 요일 헤더 */}
-                    <div className="grid grid-cols-7 gap-1 mb-2">
+                    <div className="grid grid-cols-7 gap-1">
                         {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
                             <div key={day} className="text-default-gray-700 text-center text-sm py-2">
                                 {day}
@@ -811,20 +862,16 @@ function DatePickerInput({ value, onChange, placeholder }: { value: string; onCh
 
                             const isToday = new Date().toDateString() === day.date.toDateString();
 
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            const isPast = day.date < today;
-
                             return (
                                 <button
                                     key={index}
                                     onClick={() => handleDateSelect(day.date)}
-                                    disabled={isPast}
+                                    disabled={day.isDisabled}
                                     className={`flex items-center justify-center w-7 h-7 text-sm rounded transition-colors
-                                        ${isPast ? 'cursor-not-allowed text-gray-300' : 'cursor-pointer'}
+                                        ${day.isDisabled ? 'cursor-not-allowed text-gray-300' : 'cursor-pointer'}
                                         ${isSelected ? 'bg-[var(--color-primary-300)] text-white' : ''}
-                                        ${!isSelected && !isPast ? 'hover:bg-[var(--color-default-gray-400)]' : ''}
-                                        ${isToday && !isSelected && !isPast ? 'ring-1 ring-[var(--color-primary-300)]' : ''}
+                                        ${!isSelected && !day.isDisabled ? 'hover:bg-[var(--color-default-gray-400)]' : ''}
+                                        ${isToday && !isSelected && !day.isDisabled ? 'ring-1 ring-[var(--color-primary-300)]' : ''}
                                     `}
                                 >
                                     {day.date.getDate()}

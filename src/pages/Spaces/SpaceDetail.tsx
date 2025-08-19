@@ -16,7 +16,10 @@ import ReviewTab from '../Components/Exhibition/ReviewTab';
 export default function SpaceDetail() {
     const navigate = useNavigate();
     const handleReviewClick = () => {
-        navigate('/spaces/1/review');
+        navigate(`/spaces/${space.id}/review`);
+    };
+    const handleReservationClick = () => {
+        navigate(`/spaces/${space.id}/request`, { state: { space } });
     };
     const space = {
         id: '1',
@@ -36,7 +39,7 @@ export default function SpaceDetail() {
             website: 'https://www.galleryhom.com',
             sns: 'https://www.instagram.com/galleryhom',
         },
-        isAvailable: false,
+        isAvailable: true,
     };
 
     return (
@@ -59,6 +62,7 @@ export default function SpaceDetail() {
                                 space.isAvailable ? 'bg-primary-300 text-white hover:bg-primary-400' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                             }`}
                             disabled={!space.isAvailable}
+                            onClick={handleReservationClick}
                         >
                             예약하기
                         </button>

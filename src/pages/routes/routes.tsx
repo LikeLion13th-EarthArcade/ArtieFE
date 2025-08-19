@@ -19,7 +19,7 @@ import AuthLayout from '../Components/Layout /AuthLayout';
 import Login from '../Auth/Login';
 import SignUp from '../Auth/SignUp';
 import SpaceReview from '../Spaces/SpaceReview';
-
+import ReserveComplete from '../common/reserveComplete';
 import ExhibitionPreview from '../Exhibitions/ExhibitionPreview';
 
 const router = createBrowserRouter([
@@ -82,7 +82,7 @@ const router = createBrowserRouter([
                 element: <SpaceList />,
             },
             {
-                path: 'spaces/request',
+                path: 'spaces/:id/request',
                 element: <SpaceRequest />,
             },
             {
@@ -93,6 +93,11 @@ const router = createBrowserRouter([
                 path: 'spaces/:id/review',
                 element: <SpaceReview />,
             },
+            {
+                path: 'spaces/:id/reserveComplete',
+                element: <ReserveComplete />,
+            },
+          
             //마이페이지 관련
             {
                 path: 'mypage',
