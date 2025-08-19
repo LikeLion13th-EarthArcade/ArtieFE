@@ -57,7 +57,7 @@ export default function SpaceRequest() {
         };
         console.log('예약 정보:', reservationData);
         alert('예약이 완료되었습니다!');
-        navigate(`/spaces/${space.id}`);
+        navigate(`/spaces/${space.id}/reserveComplete`, { state: { space, reservationData } });
     };
 
     return (
@@ -136,6 +136,8 @@ export default function SpaceRequest() {
                                     type="time"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
+                                    min={startTime}
+                                    max="23:59"
                                     className="mt-1 w-full border p-2 rounded-lg focus:outline-primary-300"
                                     required
                                 />
