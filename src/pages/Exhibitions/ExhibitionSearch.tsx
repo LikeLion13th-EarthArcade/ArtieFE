@@ -205,14 +205,14 @@ export default function ExhibitionSearch() {
             {filteredList.length > 0 && (
                 <div className="w-[70%] max-w-[1450px] mx-auto flex justify-end pr-2 mb-4">
                     <div
-                        className="w-[130px] h-[40px] flex items-center justify-center select-none border rounded-[15px]"
+                        className="w-[110px] h-[35px] flex items-center justify-center select-none border rounded-xl"
                         style={{
                             color: 'var(--color-default-gray-600)',
                             border: '1px solid var(--color-primary-300)',
                         }}
                     >
                         <div className="relative cursor-pointer select-none flex items-center w-[130px] px-2" onClick={toggleSortMenu}>
-                            <span className="flex-grow text-center font-semibold" style={{ color: 'var(--color-primary-300)' }}>
+                            <span className="flex-grow text-sm text-center font-semibold" style={{ color: 'var(--color-primary-300)' }}>
                                 {selectedSort}
                             </span>
                             <div className="flex-shrink-0 w-4 ml-1">
@@ -220,7 +220,7 @@ export default function ExhibitionSearch() {
                             </div>
                             {isSortMenuOpen && (
                                 <ul
-                                    className="absolute top-full left-1/2 mt-4 w-[130px] bg-white border rounded-[15px] z-10 -translate-x-1/2 transform overflow-hidden"
+                                    className="absolute top-full left-1/2 mt-4 w-[110px] text-sm bg-white border rounded-xl z-10 -translate-x-1/2 transform overflow-hidden"
                                     style={{ border: '1px solid var(--color-primary-300)' }}
                                 >
                                     {sortOptions.map((option) => (
@@ -240,16 +240,16 @@ export default function ExhibitionSearch() {
             )}
 
             {/* 전시 리스트 및 페이지네이션 */}
-            <div className="w-[70%] max-w-[1450px] mx-auto relative">
+            <div className="w-[70%] max-w-[1450px] mx-auto">
                 {filteredList.length === 0 ? (
-                    <p className="text-center text-[50px] font-semibold my-20">
+                    <p className="text-center text-4xl font-semibold my-20 leading-relaxed">
                         카테고리를 선택해서
                         <br />
                         나에게 딱 맞는 전시를 찾아보세요!
                     </p>
                 ) : (
                     <>
-                        <div className="min-h-[900px] relative">
+                        <div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 justify-center">
                                 {paginatedResults.map((ex) => (
                                     <ExhibitionMiniCard key={ex.title} ex={ex} />
@@ -258,7 +258,7 @@ export default function ExhibitionSearch() {
                         </div>
 
                         {filteredList.length > 0 && (
-                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full">
+                            <div className="my-10 flex justify-center">
                                 <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
                             </div>
                         )}
