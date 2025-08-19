@@ -76,7 +76,7 @@ const router = createBrowserRouter([
                 element: <SpaceList />,
             },
             {
-                path: 'spaces/request',
+                path: 'spaces/:id/request',
                 element: <SpaceRequest />,
             },
             {
