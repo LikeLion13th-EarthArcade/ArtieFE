@@ -7,10 +7,16 @@ import sample3 from '../../images/sample3.jpeg';
 import sample4 from '../../images/sample4.jpeg';
 import sample5 from '../../images/sample5.jpeg';
 
+import { useNavigate } from 'react-router-dom';
+
 import Gallery from '../Components/Exhibition/Gallery';
 import ReviewTab from '../Components/Exhibition/ReviewTab';
 
 export default function ExhibitionDetail() {
+    const navigate = useNavigate();
+    const handleReviewClick = () => {
+        navigate('/exhibitions/1/review');
+    };
     const exhibition = {
         id: '1',
         title: '론 뮤익',
@@ -21,7 +27,7 @@ export default function ExhibitionDetail() {
             <div>
                 <div className="flex justify-between items-center flex-wrap gap-4">
                     <div className="flex gap-3">
-                        <h1 className="text-3xl font-bold">론 뮤익</h1>
+                        <h1 className="text-3xl font-bold">{exhibition.title}</h1>
                         <div className="flex flex-wrap gap-1 mt-2 items-center">
                             {exhibition.hashtags.map((tag, idx) => (
                                 <span key={idx} className="px-2 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
@@ -97,7 +103,12 @@ export default function ExhibitionDetail() {
                         <img src={chat} alt="" className="w-5 h-5" />
                         리뷰
                     </h3>
-                    <button className="flex bg-primary-300 py-2 px-4 rounded-full text-white justify-center items-center w-[170px] gap-2">리뷰 작성하기</button>
+                    <button
+                        className="flex bg-primary-300 py-2 px-4 rounded-full text-white justify-center items-center w-[170px] gap-2"
+                        onClick={handleReviewClick}
+                    >
+                        리뷰 작성하기
+                    </button>
                 </div>
                 <div className="flex flex-col gap-4">
                     <ReviewTab />
