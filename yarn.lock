@@ -2382,12 +2382,12 @@ react-clock@^6.0.0:
     clsx "^2.0.0"
     get-user-locale "^3.0.0"
 
-react-datepicker@^8.5.0:
-  version "8.5.0"
-  resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-8.5.0.tgz#25b39f394d8b2107d1333574301828d5ef73c1a0"
-  integrity sha512-GdKElMgEBgyAv2L5QjwvlStdZU8Nz76roBZ2rkpxFx8eIJ0SAHaAGckG8+FSi00EQnzKqA2N9qA61oxll8CyhA==
+react-datepicker@^8.6.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/react-datepicker/-/react-datepicker-8.6.0.tgz#2d20cc41a2a393e95016f15c3904d4a9224e5626"
+  integrity sha512-wTfsXaGwrwCTyW8TW+glxCmeD4UDgW9q8fLhQmj80A4v+vgqi9mz5d+4npT3qCc38Ivi4cLVbUcW9GS9Dhi+Ug==
   dependencies:
-    "@floating-ui/react" "^0.27.3"
+    "@floating-ui/react" "^0.27.15"
     clsx "^2.1.1"
     date-fns "^4.1.0"
 
