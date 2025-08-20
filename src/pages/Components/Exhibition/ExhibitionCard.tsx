@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Heart, Star } from 'lucide-react';
 import posterImage from '../../../images/poster.png';
+import { useNavigate } from 'react-router-dom';
 
 export default function ExhibitionCard() {
     const [liked, setLiked] = useState(false);
     const exhibition = {
+        id: 1,
         title: '론 뮤익',
         rating: 4.5,
         hashtags: ['사진', '미디어아트', '현대미술'],
@@ -13,6 +15,11 @@ export default function ExhibitionCard() {
         description: '국립현대미술관과 까르띠에 현대미술재단은 2025년 4월 11일부터 7월 13일까지 한국 최초로 호주 출신 작가 론 뮤익의 대규모 개인전을 개최한다.',
     };
 
+    const navigate = useNavigate();
+
+    function handleCardClick() {
+        navigate(`/exhibitions/${exhibition.id}`);
+    }
     return (
         <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto">
             {/* 포스터 이미지 */}
@@ -58,7 +65,9 @@ export default function ExhibitionCard() {
 
                     {/* 전시 장소 */}
                     <div className="flex items-center gap-2 mt-3">
-                        <span className="inline-flex items-center justify-center bg-[#F46D6D] rounded-md px-2 py-1 text-white text-xs font-medium">장소</span>
+                        <span className="inline-flex items-center justify-center bg-[#F46D6D] rounded-md px-2 py-1 text-white text-xs w-15 font-medium">
+                            장소
+                        </span>
                         <p className="text-gray-500 text-sm md:text-base">{exhibition.place}</p>
                     </div>
 
@@ -75,8 +84,9 @@ export default function ExhibitionCard() {
 
                 {/* 하단 버튼 */}
                 <div className="mt-4 flex flex-col sm:flex-row gap-2">
-                    <button className="flex-1 px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm md:text-base">리뷰 보기</button>
-                    <button className="flex-1 px-3 py-2 bg-primary-300 text-white rounded-lg hover:bg-[#d24e4e] text-sm md:text-base">홈페이지 바로가기</button>
+                    <button className="flex-1 px-3 py-2 bg-primary-300 text-white rounded-lg hover:bg-[#d24e4e] text-sm md:text-base" onClick={handleCardClick}>
+                        자세히 보기
+                    </button>
                 </div>
             </div>
         </div>

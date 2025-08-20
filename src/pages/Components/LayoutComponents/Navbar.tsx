@@ -1,11 +1,11 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import clsx from 'clsx';
 import { Menu, X } from 'lucide-react'; // 햄버거/닫기 아이콘
 import profileIcon from '../../../icons/profile.svg';
 
 const NAV_ITEMS = [
-    { label: '지금 뜨는 전시', path: '/exhibitions' },
+    { label: '전시 추천', path: '/exhibitions' },
     { label: '전시 찾기', path: '/exhibitions/search' },
     { label: '전시 등록하기', path: '/exhibitions/new' },
     { label: '공간 대여하기', path: '/spaces' },
@@ -15,16 +15,27 @@ const NAV_ITEMS = [
 export default function Navbar() {
     const location = useLocation();
     const [menuOpen, setMenuOpen] = useState(false);
+    const navigate = useNavigate();
+
+    function handleLogoClick() {
+        navigate('/');
+    }
+
+    // 현재 활성화된 메뉴 결정 (홈은 활성화 없음)
+    const isActive = (path: string) => {
+        if (path === '/') return false; // 홈은 선택 표시 없음
+        return location.pathname === path;
+    };
 
     return (
         <nav className="w-full bg-white shadow-md px-6 py-4">
             <div className="flex items-center justify-between">
                 {/* 로고 */}
                 <div>
-                    <img src="/ArtieLogo.svg" alt="Artie Logo" className="h-6" />
+                    <img src="/ArtieLogo.svg" alt="Artie Logo" className="h-6 cursor-pointer" onClick={handleLogoClick} />
                 </div>
 
-                {/* 데스크탑 메뉴 */}
+                {/* PC 메뉴 */}
                 <ul className="hidden md:flex gap-6">
                     {NAV_ITEMS.map((item) => (
                         <li key={item.label}>
@@ -32,7 +43,7 @@ export default function Navbar() {
                                 to={item.path}
                                 className={clsx(
                                     'px-4 py-2 rounded-full cursor-pointer transition',
-                                    location.pathname === item.path ? 'bg-[#E45F5F] text-white' : 'text-gray-700 hover:bg-gray-100',
+                                    isActive(item.path) ? 'bg-[#E45F5F] text-white' : 'text-gray-700 hover:bg-gray-100',
                                 )}
                             >
                                 {item.label}
@@ -41,17 +52,20 @@ export default function Navbar() {
                     ))}
                 </ul>
 
+                {/* 프로필 아이콘 */}
                 <Link to="/mypage" className="hidden md:block">
                     <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
                         <img src={profileIcon} alt="프로필이미지" />
                     </div>
                 </Link>
 
+                {/* 모바일 메뉴 토글 */}
                 <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
                     {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
             </div>
 
+            {/* 모바일 메뉴 */}
             {menuOpen && (
                 <div className="md:hidden mt-4 space-y-2">
                     {NAV_ITEMS.map((item) => (
@@ -61,7 +75,7 @@ export default function Navbar() {
                             onClick={() => setMenuOpen(false)}
                             className={clsx(
                                 'block px-4 py-2 rounded-md transition',
-                                location.pathname === item.path ? 'bg-[#E45F5F] text-white' : 'text-gray-700 hover:bg-gray-100',
+                                isActive(item.path) ? 'bg-[#E45F5F] text-white' : 'text-gray-700 hover:bg-gray-100',
                             )}
                         >
                             {item.label}
