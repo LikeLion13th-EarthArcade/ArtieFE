@@ -20,7 +20,6 @@ const Dropdown: React.FC<DropdownProps> = ({ id, label, helperText, options, pla
 
     return (
         <div className="flex flex-col gap-4 relative w-full">
-
             {label && <span className="text-primary-300 text-lg ml-1">{label}</span>}
             {helperText && <span className="text-default-gray-500 text-sm">{helperText}</span>}
             <div

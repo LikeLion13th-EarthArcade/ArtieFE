@@ -19,8 +19,7 @@ import AuthLayout from '../Components/Layout /AuthLayout';
 import Login from '../Auth/Login';
 import SignUp from '../Auth/SignUp';
 import SpaceReview from '../Spaces/SpaceReview';
-import ReserveComplete from '../common/ReserveComplete';
-import ExhibitionPreview from '../Exhibitions/ExhibitionPreview';
+import ReserveComplete from '../common/reserveComplete';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
@@ -62,10 +61,6 @@ const router = createBrowserRouter([
             {
                 path: 'exhibitions/new',
                 element: <ExhibitionListCreate />,
-            },
-            {
-                path: 'exhibitions/preview/:id',
-                element: <ExhibitionPreview />,
             },
             {
                 path: 'exhibitions/:id',
