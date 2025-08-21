@@ -19,7 +19,12 @@ import AuthLayout from '../Components/Layout /AuthLayout';
 import Login from '../Auth/Login';
 import SignUp from '../Auth/SignUp';
 import SpaceReview from '../Spaces/SpaceReview';
-import ReserveComplete from '../common/reserveComplete';
+import ReserveComplete from '../common/ReserveComplete';
+import SpaceManage from '../Spaces/SpaceManage';
+import SpaceListCreate from '../Spaces/SpaceListCreate';
+import SpaceManageDetail from '../Spaces/SpaceManageDetail';
+import SpaceEdit from '../Spaces/SpaceEdit';
+import Reserve from '../common/Reserve';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
@@ -91,6 +96,26 @@ const router = createBrowserRouter([
             {
                 path: 'spaces/:id/reserveComplete',
                 element: <ReserveComplete />,
+            },
+            {
+                path: 'spaces/management',
+                element: <SpaceManage />,
+            },
+            {
+                path: 'spaces/new',
+                element: <SpaceListCreate />,
+            },
+            {
+                path: 'spaces/management/:id',
+                element: <SpaceManageDetail />,
+            },
+            {
+                path: 'spaces/edit/:id',
+                element: <SpaceEdit />,
+            },
+            {
+                path: 'spaces/reserve',
+                element: <Reserve />,
             },
 
             //마이페이지 관련
