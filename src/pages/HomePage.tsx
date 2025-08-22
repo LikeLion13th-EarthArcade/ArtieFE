@@ -7,11 +7,12 @@ import banner2 from '../../src/images/bannerImages/banner2.png';
 import banner3 from '../../src/images/bannerImages/banner3.png';
 import banner4 from '../../src/images/bannerImages/banner4.png';
 import ExhibitionCard from './Components/Exhibition/ExhibitionCard';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomePage() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const navigate = useNavigate();
-
+    const { user } = useAuth();
     const bannerImages = [
         {
             id: 1,
@@ -125,7 +126,7 @@ export default function HomePage() {
 
             {/* 나머지 콘텐츠 영역 */}
             <div className="container mx-auto px-4 py-12">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome 나영석님!</h1>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome {user?.name}님!</h1>
                 <div className=" text-gray-600">
                     <p>예술가와 공간을 잇는 AI 전시 매칭 플랫폼, Artie에서 당신의 전시가 시작됩니다.</p>
                 </div>
