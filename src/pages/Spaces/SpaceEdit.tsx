@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import DaumPostcode from 'react-daum-postcode';
 import type { Address } from 'react-daum-postcode';
 
-import checkIcon from '../../icons/check.svg';
+import home from '../../icons/home.svg';
 import keyboard from '../../icons/keyboard.svg';
 import images from '../../icons/images.svg';
 
@@ -592,8 +592,8 @@ export default function SpaceEdit() {
         <div className="flex flex-col items-center w-[70%] p-10 gap-10 mx-auto">
             {/* 상단 타이틀 */}
             <div className="flex items-center gap-3 w-full max-w-[1040px]">
-                <img src={checkIcon} alt="check" className="w-[30px] h-[30px]" />
-                <span className="text-3xl font-bold">공간 등록하기</span>
+                <img src={home} alt="home" className="w-[30px] h-[30px]" />
+                <span className="text-3xl font-bold">공간 수정하기</span>
             </div>
 
             {/* 섹션 반복 */}

@@ -25,6 +25,9 @@ import SpaceListCreate from '../Spaces/SpaceListCreate';
 import SpaceManageDetail from '../Spaces/SpaceManageDetail';
 import SpaceEdit from '../Spaces/SpaceEdit';
 import Reserve from '../common/Reserve';
+import MyActivity from '../Mypage/MyActivity';
+import MySpaces from '../Mypage/MySpaces';
+import ExhibitionEdit from '../Exhibitions/ExhibitionEdit';
 
 const router = createBrowserRouter([
     //로그인을 하지 않았을 경우 넘어가는 layout 시작 부분
@@ -75,6 +78,10 @@ const router = createBrowserRouter([
                 path: 'exhibitions/:id/review',
                 element: <ExhibitionReview />,
             },
+            {
+                path: 'exhibitions/edit/:id',
+                element: <ExhibitionEdit />,
+            },
 
             //공간 대여 관련 페이지 => 추후에 세부하게 설정하는 게 좋을 것 같으면 그렇게 수정할게요
             {
@@ -122,18 +129,32 @@ const router = createBrowserRouter([
             {
                 path: 'mypage',
                 element: <MyPage />,
-            },
-            {
-                path: 'mypage/exhibitions',
-                element: <MyExhibitions />,
-            },
-            {
-                path: 'mypage/rents',
-                element: <MyRents />,
-            },
-            {
-                path: 'mypage/profile',
-                element: <ProfileEdit />,
+                children: [
+                    {
+                        index: true, // 기본 라우트
+                        element: <ProfileEdit />, // mypage 들어오면 바로 ProfileEdit
+                    },
+                    {
+                        path: 'profile',
+                        element: <ProfileEdit />,
+                    },
+                    {
+                        path: 'activity',
+                        element: <MyActivity />,
+                    },
+                    {
+                        path: 'rents',
+                        element: <MyRents />,
+                    },
+                    {
+                        path: 'exhibitions',
+                        element: <MyExhibitions />,
+                    },
+                    {
+                        path: 'spaces',
+                        element: <MySpaces />,
+                    },
+                ],
             },
         ],
     },
