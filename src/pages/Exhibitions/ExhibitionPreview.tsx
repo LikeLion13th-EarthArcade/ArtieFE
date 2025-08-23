@@ -59,7 +59,7 @@ export default function ExhibitionPreview() {
                                     state: data,
                                 })
                             }
-                            className="flex justify-center items-center border border-primary-300 text-xs text-primary-300 py-2 rounded-full w-[100px]"
+                            className="flex justify-center items-center border border-primary-300 text-sm text-primary-300 py-2 rounded-full w-[120px]"
                         >
                             미리보기 완료
                         </button>
