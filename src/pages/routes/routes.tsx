@@ -3,7 +3,6 @@ import { PublicRoute } from './publicRoute';
 import { ProtectedRoute } from './protectedRoute';
 
 import Login from '../Auth/Login';
-import SignUp from '../Auth/SignUp';
 import HomePage from '../HomePage';
 
 // 전시 관련
@@ -12,6 +11,7 @@ import ExhibitionDetail from '../Exhibitions/ExhibitionDetail';
 import ExhibitionListCreate from '../Exhibitions/ExhibitionListCreate';
 import ExhibitionReview from '../Exhibitions/ExhibitionReview';
 import ExhibitionSearch from '../Exhibitions/ExhibitionSearch';
+import ExhibitionPreview from '../Exhibitions/ExhibitionPreview';
 
 // 공간 관련
 import SpaceList from '../Spaces/SpaceList';
@@ -43,10 +43,7 @@ const router = createBrowserRouter([
                 <AuthLayout />
             </PublicRoute>
         ),
-        children: [
-            { index: true, element: <Login /> },
-            { path: 'signup', element: <SignUp /> },
-        ],
+        children: [{ index: true, element: <Login /> }],
     },
     {
         path: '/',
@@ -88,6 +85,8 @@ const router = createBrowserRouter([
             { path: 'exhibitions/new', element: <ExhibitionListCreate /> },
             { path: 'exhibitions/:id', element: <ExhibitionDetail /> },
             { path: 'exhibitions/:id/review', element: <ExhibitionReview /> },
+            { path: 'exhibitions/:id/preview', element: <ExhibitionPreview /> },
+
             // 공간 관련
             { path: 'spaces', element: <SpaceList /> },
             { path: 'spaces/new', element: <SpaceListCreate /> },
