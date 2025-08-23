@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { axiosInstance } from '../api/axiosInstance';
 
 type User = {
+    userId: number;
     name: string;
     email: string;
 };
@@ -12,6 +13,7 @@ interface AuthContextType {
     isLoggedIn: boolean;
     login: (userData: User) => void;
     logout: () => void;
+    getUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,10 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        axiosInstance
-            .get('/api/v1/users/me')
-            .then((res) => setUser(res.data.result))
-            .catch(() => setUser(null));
+        getUser();
     }, []);
 
     const login = (userData: User) => {
@@ -36,7 +35,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         alert('로그아웃 되었습니다.');
     };
 
-    return <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>{children}</AuthContext.Provider>;
+    const getUser = () => {
+        axiosInstance
+            .get('/api/v1/users/me')
+            .then((res) => setUser(res.data.result))
+            .catch(() => setUser(null));
+    };
+
+    return <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout, getUser }}>{children}</AuthContext.Provider>;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components

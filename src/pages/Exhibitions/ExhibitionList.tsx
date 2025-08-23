@@ -4,13 +4,16 @@ import game from '../../icons/game.svg';
 
 import ExhibitionCard from '../Components/Exhibition/ExhibitionCard';
 
+import { useAuth } from '@/context/AuthContext';
+
 export default function ExhibitionList() {
+    const { user } = useAuth();
     return (
         <div className="flex flex-col items-center min-h-screen py-10">
-            <h1 className="text-3xl font-bold">나영석님의 취향 키워드</h1>
+            <h1 className="text-3xl font-bold">{user?.name}님의 취향 키워드</h1>
 
             <div className="text-center mt-4 text-[#777]">
-                <p>다음은 아띠가 분석한 나영석님의 전시 취향 키워드입니다.</p>
+                <p>다음은 아띠가 분석한 {user?.name}님의 전시 취향 키워드입니다.</p>
                 <p>이 키워드를 바탕으로 전시를 추천해드릴게요.</p>
             </div>
 

@@ -6,7 +6,7 @@ import logout_icon from '../../icons/logout.svg';
 import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileEdit() {
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -49,7 +49,7 @@ export default function ProfileEdit() {
                             <label className="text-sm font-medium">이름</label>
                             <input
                                 type="text"
-                                defaultValue="나영석"
+                                defaultValue={user?.name}
                                 className="w-full mt-1 p-3 border border-default-gray-600 rounded-lg focus:outline-none focus:ring-0"
                             />
                         </div>
