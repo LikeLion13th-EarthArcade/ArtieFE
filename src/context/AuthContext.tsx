@@ -32,6 +32,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => {
         setUser(null);
+        axiosInstance.post('/api/v1/auth/logout');
+        alert('로그아웃 되었습니다.');
     };
 
     return <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>{children}</AuthContext.Provider>;
