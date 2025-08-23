@@ -2,9 +2,11 @@ import { useState } from 'react';
 
 import profile_change from '../../icons/profile_change.png';
 import { Eye, EyeOff } from 'lucide-react';
-import logout from '../../icons/logout.svg';
+import logout_icon from '../../icons/logout.svg';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileEdit() {
+    const { logout } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -14,6 +16,10 @@ export default function ProfileEdit() {
         console.log('Form submitted');
     };
 
+    const handleLogout = async () => {
+        logout();
+    };
+
     return (
         <div className="flex items-center gap-5">
             <main className="flex-1">
@@ -21,8 +27,10 @@ export default function ProfileEdit() {
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold">개인정보 관리</h1>
                         <div className="flex items-center border border-default-gray-500 px-3 py-1 rounded-2xl gap-2">
-                            <button className="text-xs text-default-gray-600">로그아웃</button>
-                            <img src={logout} alt="로그아웃" className="w-3 h-3" />
+                            <button className="text-xs text-default-gray-600" onClick={handleLogout}>
+                                로그아웃
+                            </button>
+                            <img src={logout_icon} alt="로그아웃" className="w-3 h-3" />
                         </div>
                     </div>
 
