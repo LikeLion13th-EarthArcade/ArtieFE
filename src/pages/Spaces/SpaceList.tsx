@@ -19,10 +19,46 @@ export default function SpaceList() {
     };
 
     const dropdowns = [
-        { id: 'location', label: '장소', options: ['강남구', '강동구', '강북구'], placeholder: '지역' },
-        { id: 'spec', label: '공간 사양', options: ['1-10명', '10-30명'], placeholder: '수용 인원' },
-        { id: 'purpose', label: '목적', options: ['전시회', '팝업 스토어'], placeholder: '전시 종류' },
-        { id: 'concept', label: '분위기/컨셉', options: ['화이트 박스', '인더스트리얼'], placeholder: '공간 종류' },
+        {
+            id: 'location',
+            label: '장소',
+            options: [
+                '강남구',
+                '강동구',
+                '강북구',
+                '강서구',
+                '관악구',
+                '광진구',
+                '구로구',
+                '금천구',
+                '노원구',
+                '도봉구',
+                '동대문구',
+                '동작구',
+                '마포구',
+                '서대문구',
+                '서초구',
+                '성동구',
+                '성북구',
+                '송파구',
+                '양천구',
+                '영등포구',
+                '용산구',
+                '은평구',
+                '종로구',
+                '중구',
+                '중랑구',
+            ],
+            placeholder: '지역',
+        },
+        { id: 'spec', label: '공간 사양', options: ['1-10명', '10-30명', '30-50명', '50명 이상'], placeholder: '수용 인원' },
+        { id: 'purpose', label: '목적', options: ['전시회', '팝업 스토어', '체험형 전시•워크숍'], placeholder: '전시 종류' },
+        {
+            id: 'concept',
+            label: '분위기/컨셉',
+            options: ['화이트 박스', '인더스트리얼', '빈티지•클래식', '자연•채광', '집중형 조명'],
+            placeholder: '공간 종류를 선택하세요',
+        },
     ];
 
     const { data, isLoading, isError } = useQuery<getSpaceListResponse>({
