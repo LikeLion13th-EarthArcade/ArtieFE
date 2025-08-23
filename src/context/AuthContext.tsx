@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { axiosInstance } from '../api/axiosInstance';
 
 type User = {
     name: string;
     email: string;
-    // 필요한 다른 필드 추가 가능
 };
 
 interface AuthContextType {
@@ -17,6 +18,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        axiosInstance
+            .get('/api/v1/users/me')
+            .then((res) => setUser(res.data.result))
+            .catch(() => setUser(null));
+    }, []);
 
     const login = (userData: User) => {
         setUser(userData);
