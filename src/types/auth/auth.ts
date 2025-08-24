@@ -35,3 +35,15 @@ export type TEmailAuthRequest = TCommonResponse<{
 export type TEmailAuthResponse = TCommonResponse<{
     result: boolean;
 }>;
+
+//회원 정보 수정 post 타입
+export type TModifyAuthRequest = {
+    newName: string;
+    currentPassword: string;
+    newPassword: string;
+    newPasswordConfirmation: string;
+};
+//회원 정보 수정 응답 타입
+export type TModifyAuthResponse = TCommonResponse<{
+    result: string;
+}>;
