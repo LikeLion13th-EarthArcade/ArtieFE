@@ -8,7 +8,7 @@ import type { TModifyAuthRequest } from '@/types/auth/auth';
 import { modify } from '@/api/auth/auth';
 
 export default function ProfileEdit() {
-    const { logout, user } = useAuth();
+    const { logout, user, getUser } = useAuth();
 
     const [name, setName] = useState(user?.name || '');
     const [currentPassword, setCurrentPassword] = useState('');
@@ -24,6 +24,7 @@ export default function ProfileEdit() {
         onSuccess: (res) => {
             if (res.isSuccess) {
                 alert('회원정보가 수정되었습니다');
+                getUser();
             } else {
                 alert(res.message || '수정에 실패했습니다.');
             }

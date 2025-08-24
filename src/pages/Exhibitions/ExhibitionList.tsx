@@ -2,8 +2,6 @@ import camera from '../../icons/camera.svg';
 import exhibition from '../../icons/exhibition.svg';
 import game from '../../icons/game.svg';
 
-import ExhibitionCard from '../Components/Exhibition/ExhibitionCard';
-
 import { useAuth } from '@/context/AuthContext';
 
 export default function ExhibitionList() {
@@ -31,7 +29,6 @@ export default function ExhibitionList() {
                     </li>
                 ))}
             </ul>
-            <ExhibitionCard />
         </div>
     );
 }

@@ -75,7 +75,7 @@ export default function HomePage() {
         queryFn: async (): Promise<Iexhibition[]> => {
             const res = await getartierecommended();
             if (!res.result) return [];
-            return Array.isArray(res.result) ? res.result : [res.result];
+            return Array.isArray(res.result) ? res.result : [];
         },
     });
 
@@ -88,7 +88,7 @@ export default function HomePage() {
         queryFn: async (): Promise<Iexhibition[]> => {
             const res = await gethotnow();
             if (!res.result) return [];
-            return Array.isArray(res.result) ? res.result : [res.result];
+            return Array.isArray(res.result) ? res.result : [];
         },
     });
 
