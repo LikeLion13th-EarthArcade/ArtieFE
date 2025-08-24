@@ -85,7 +85,7 @@ const router = createBrowserRouter([
             { path: 'exhibitions/new', element: <ExhibitionListCreate /> },
             { path: 'exhibitions/:id', element: <ExhibitionDetail /> },
             { path: 'exhibitions/:id/review', element: <ExhibitionReview /> },
-            { path: 'exhibitions/:id/preview', element: <ExhibitionPreview /> },
+            { path: 'exhibitions/preview', element: <ExhibitionPreview /> },
 
             // 공간 관련
             { path: 'spaces', element: <SpaceList /> },

@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { AxiosError } from 'axios';
+
 import { X } from 'lucide-react';
 import DaumPostcode from 'react-daum-postcode';
 import type { Address } from 'react-daum-postcode';
+
+import { createSpace } from '@/api/spaces/spaces';
+import type { CreateSpaceRequest, SpaceType, SpaceMoodType, FacilityType, SpaceSize } from '@/types/spaces/spaces';
 
 import home from '../../icons/home.svg';
 import keyboard from '../../icons/keyboard.svg';
@@ -11,6 +16,7 @@ import images from '../../icons/images.svg';
 import Dropdown from '../Components/Dropdown/Dropdown';
 import { FormInput } from '../Components/Common/FormInput';
 import { FormTextarea } from '../Components/Common/FormTextarea';
+import { FileUpload } from '../Components/Common/FileUpload';
 import { SectionHeader } from '../Components/Common/SectionHeader';
 
 export default function SpaceListCreate() {
@@ -26,6 +32,7 @@ export default function SpaceListCreate() {
     const [email, setEmail] = useState('');
     const [website, setWebsite] = useState('');
     const [sns, setSns] = useState('');
+
     const [facilities, setFacilities] = useState({
         wifi: false,
         restroom: false,
@@ -35,12 +42,11 @@ export default function SpaceListCreate() {
         wheelchair: false,
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     // 드롭다운 관리
     const [openId, setOpenId] = useState('');
-    const handleToggle = (id: string) => {
-        setOpenId((prev) => (prev === id ? '' : id));
-    };
-
     const [selectedValues, setSelectedValues] = useState({
         type: '',
         operatingHours: '',
@@ -48,13 +54,9 @@ export default function SpaceListCreate() {
         mood: '',
         startTime: '',
         endTime: '',
+        postalCode: '',
     });
 
-    // 모달 관리
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const closeModal = () => setIsModalOpen(false);
-
-    // 운영 시간 옵션 생성
     const timeOptions = Array.from({ length: 48 }, (_, i) => {
         const hours = String(Math.floor(i / 2)).padStart(2, '0');
         const minutes = i % 2 === 0 ? '00' : '30';
@@ -66,7 +68,12 @@ export default function SpaceListCreate() {
         return h * 60 + m;
     };
 
-    // 주소 선택 완료
+    const handleToggle = (id: string) => {
+        setOpenId((prev) => (prev === id ? '' : id));
+    };
+
+    const closeModal = () => setIsModalOpen(false);
+
     const handleComplete = (data: Address) => {
         setAddress(data.address);
         setIsPostcodeOpen(false);
@@ -102,6 +109,92 @@ export default function SpaceListCreate() {
         }
 
         return true;
+    };
+
+    const handleSubmitSpace = async () => {
+        if (!validateForm()) return;
+
+        setIsSubmitting(true);
+
+        try {
+            const spaceData: CreateSpaceRequest = {
+                name: title,
+                description,
+                type: (() => {
+                    const map: Record<string, SpaceType> = {
+                        '전시회': 'EXHIBITION',
+                        '팝업스토어': 'POPUP_STORE',
+                        '체험 전시': 'EXPERIENCE_EXHIBITION',
+                    };
+                    return map[selectedValues.type] as SpaceType;
+                })(),
+                mood: (() => {
+                    const map: Record<string, SpaceMoodType> = {
+                        '화이트 박스': 'WHITE_BOX',
+                        '인더스트리얼': 'INDUSTRIAL',
+                        '빈티지•클래식': 'VINTAGE_CLASSIC',
+                        '자연•채광': 'NATURAL_LIGHT',
+                        '집중형 조명': 'FOCUSED_LIGHTING',
+                    };
+                    return map[selectedValues.mood] as SpaceMoodType;
+                })(),
+                size: (() => {
+                    const map: Record<string, SpaceSize> = {
+                        '1-10명, 소형 공간(20평 이하)': 'SMALL',
+                        '10-30명, 중소 공간(20-50평)': 'MEDIUM_SMALL',
+                        '30-50명, 중형 공간(50-100평)': 'MEDIUM',
+                        '50명 이상, 대형 공간(100평 이상)': 'LARGE',
+                    };
+                    return map[selectedValues.spaceInfo] as SpaceSize;
+                })(),
+                location: `${address} ${detailAddress}`.trim(),
+                address: {
+                    roadAddress: address,
+                    jibunAddress: address,
+                    postalCode: selectedValues.postalCode || '',
+                    detail: detailAddress,
+                },
+                purpose: 'INDIVIDUAL',
+                facility: Object.entries(facilities)
+                    .filter(([, checked]) => checked)
+                    .map(([key]) => {
+                        const map: Record<string, FacilityType> = {
+                            wifi: 'WIFI',
+                            restroom: 'RESTROOM',
+                            lounge: 'LOUNGE',
+                            parking: 'PARKING',
+                            elevator: 'ELEVATOR',
+                            wheelchair: 'WHEELCHAIR',
+                        };
+                        return map[key];
+                    }),
+
+                phoneNumber,
+                email,
+                website: website || '',
+                sns: sns || '',
+                startTime: selectedValues.startTime,
+                endTime: selectedValues.endTime,
+            };
+
+            console.log('spaceData', spaceData);
+
+            const response = await createSpace(spaceData, imageFiles);
+
+            if (response.isSuccess) {
+                setIsModalOpen(true);
+            } else {
+                alert(response.message || '공간 등록에 실패했습니다.');
+            }
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message?: string }>;
+            console.error('Space submission error:', axiosError);
+
+            const errorMessage = axiosError.response?.data?.message || '공간 등록 중 오류가 발생했습니다.';
+            alert(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // 시설 옵션 배열 생성
@@ -142,53 +235,15 @@ export default function SpaceListCreate() {
             <div className="flex flex-col gap-4 w-full max-w-[1040px]">
                 <SectionHeader number={2} title="공간 이미지 업로드" />
 
-                <div className="flex flex-col gap-4">
-                    <span className="text-lg text-primary-300 ml-1">공간 사진 등록</span>
-                    <div
-                        className="rounded-lg p-3 w-full min-h-[200px] border border-primary-300 flex flex-col items-center justify-center cursor-pointer"
-                        onClick={() => document.getElementById('fileInput')?.click()}
-                    >
-                        {imageFiles.length === 0 ? (
-                            <div className="flex flex-col items-center text-center">
-                                <img src={images} alt="images icon" className="w-9 h-9 mb-2" />
-                                <span className="text-default-gray-600">
-                                    공간의 분위기와 특징을 보여줄 수 있는 이미지를 업로드해주세요. <br /> 최대 5장까지 등록할 수 있어요.
-                                </span>
-                            </div>
-                        ) : (
-                            <div className="w-full flex flex-col gap-2">
-                                {imageFiles.map((file, index) => (
-                                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                                        <span>{file.name}</span>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setImageFiles((prev) => prev.filter((_, i) => i !== index));
-                                            }}
-                                            className="text-primary-300"
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        <input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={(e) => {
-                                if (!e.target.files) return;
-                                const filesArray = Array.from(e.target.files);
-                                const newFiles = [...imageFiles, ...filesArray].slice(0, 5);
-                                setImageFiles(newFiles);
-                            }}
-                            className="hidden"
-                            id="fileInput"
-                        />
-                    </div>
-                    <span className="text-default-gray-500 text-sm text-right block mr-1">{imageFiles.length} /5</span>
-                </div>
+                <FileUpload
+                    label="공간 사진 등록"
+                    files={imageFiles}
+                    onChange={setImageFiles}
+                    maxFiles={5}
+                    emptyStateIcon={images}
+                    emptyStateIconAlt="images icon"
+                    emptyStateText="공간의 분위기와 특징을 보여줄 수 있는 이미지를 업로드해주세요. 최대 5장까지 등록할 수 있어요."
+                />
             </div>
             {/* 3. 위치 정보 */}
             <div className="flex flex-col gap-4 w-full max-w-[1040px]">
@@ -341,12 +396,7 @@ export default function SpaceListCreate() {
                 <SectionHeader number={7} title="문의 방법" />
 
                 <div className="grid grid-cols-2 gap-4">
-                    <FormInput
-                        label="연락처"
-                        value={phoneNumber}
-                        onChange={setPhoneNumber}
-                        placeholder="연락 가능한 전화번호를 입력해주세요. (예: 010-1234-5678)"
-                    />
+                    <FormInput label="연락처" value={phoneNumber} onChange={setPhoneNumber} placeholder="전화번호를 입력해주세요. (예: 010-1234-5678)" />
 
                     <FormInput label="이메일" value={email} onChange={setEmail} placeholder="이메일 주소를 입력해주세요." />
 
@@ -357,48 +407,14 @@ export default function SpaceListCreate() {
             </div>
             {/* 버튼 영역 */}
             <div className="flex gap-6 mt-12 justify-center">
-                <button
-                    className="w-[170px] h-[60px] rounded-[50px] bg-white text-lg text-primary-300 border border-primary-300"
-                    onClick={() =>
-                        navigate('/exhibitions/1/preview', {
-                            state: {
-                                title,
-                                description,
-                                address,
-                                detailAddress,
-                                phoneNumber,
-                                email,
-                                website,
-                                sns,
-                                selectedValues: {
-                                    ...selectedValues,
-                                    facilities: Object.entries(facilities)
-                                        .filter(([, checked]) => checked)
-                                        .map(([key]) => {
-                                            if (key === 'wifi') return '와이파이';
-                                            if (key === 'restroom') return '화장실';
-                                            if (key === 'lounge') return '휴게 공간';
-                                            if (key === 'parking') return '주차장';
-                                            if (key === 'elevator') return '엘리베이터';
-                                            if (key === 'wheelchair') return '휠체어 접근 가능F';
-                                            return key;
-                                        }),
-                                },
-                            },
-                        })
-                    }
-                >
-                    미리보기
+                <button className="w-[170px] h-[60px] rounded-[50px] bg-white text-lg text-primary-300 border border-primary-300" onClick={() => navigate('/')}>
+                    취소하기
                 </button>
 
                 <button
                     className="w-[170px] h-[60px] rounded-[50px] text-white text-lg"
-                    style={{ backgroundColor: 'var(--color-primary-300)', border: `1px solid var(--color-primary-300)` }}
-                    onClick={() => {
-                        if (validateForm()) {
-                            setIsModalOpen(true);
-                        }
-                    }}
+                    style={{ backgroundColor: 'var(--color-primary-300)', border: `1px solid var(--color-primary-300)`, opacity: isSubmitting ? 0.7 : 1 }}
+                    onClick={handleSubmitSpace}
                 >
                     등록하기
                 </button>
