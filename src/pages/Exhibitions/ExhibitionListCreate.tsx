@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import type { AxiosError } from 'axios';
 import DaumPostcode from 'react-daum-postcode';
 import type { Address } from 'react-daum-postcode';
+
+import { createExhibition } from '@/api/exhibitions/exhibitions';
+import type { CreateExhibitionRequest, CategoryType, MoodType, FacilityType } from '@/types/exhibitions/exhibitions';
 
 import exhibitionIcon from '../../icons/exhibition_icon.svg';
 import keyboard from '../../icons/keyboard.svg';
@@ -19,27 +23,42 @@ import { SectionHeader } from '../Components/Common/SectionHeader';
 
 export default function ExhibitionListCreate() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const prevData = location.state;
 
+    // 기본 입력값
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+
+    // 주소 관련
     const [address, setAddress] = useState('');
     const [detailAddress, setDetailAddress] = useState('');
     const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
+
+    // 시설 체크박스 상태
     const [facilities, setFacilities] = useState({
         wifi: false,
         restroom: false,
         stroller: false,
     });
 
-    // 드롭다운 관리
+    // 제출 상태
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // 드롭다운 열림 관리
     const [openId, setOpenId] = useState('');
     const handleToggle = (id: string) => {
         setOpenId((prev) => (prev === id ? '' : id));
     };
 
+    // 등록 완료 후 모달 단계 관리
+    const [step, setStep] = useState<0 | 1 | null>(null);
+    const closeModal = () => setStep(null);
+
+    // 드롭다운 및 부가 정보 선택값
     const [selectedValues, setSelectedValues] = useState({
         type: '',
         form: '',
@@ -52,15 +71,10 @@ export default function ExhibitionListCreate() {
         endTime: '',
         dayOff: [] as string[],
         holidayClosed: false,
+        postalCode: '',
     });
 
-    // 모달 스텝 관리
-    const [step, setStep] = useState<0 | 1 | null>(null);
-    const closeModal = () => setStep(null);
-
-    const location = useLocation();
-    const prevData = location.state;
-
+    // 이전 화면에서 넘어온 데이터 복원
     useEffect(() => {
         if (prevData) {
             setTitle(prevData.title);
@@ -70,10 +84,12 @@ export default function ExhibitionListCreate() {
             setEndDate(prevData.endDate);
             setAddress(prevData.address);
             setDetailAddress(prevData.detailAddress);
+
             setSelectedValues({
                 ...prevData.selectedValues,
                 dayOff: Array.isArray(prevData.selectedValues?.dayOff) ? prevData.selectedValues.dayOff : [],
             });
+
             if (prevData.selectedValues?.facilities) {
                 const selectedFacilities: string[] = prevData.selectedValues.facilities;
                 setFacilities({
@@ -85,7 +101,7 @@ export default function ExhibitionListCreate() {
         }
     }, [prevData]);
 
-    // 운영 시간 옵션 생성
+    // 운영 시간 옵션
     const timeOptions = Array.from({ length: 48 }, (_, i) => {
         const hours = String(Math.floor(i / 2)).padStart(2, '0');
         const minutes = i % 2 === 0 ? '00' : '30';
@@ -100,6 +116,10 @@ export default function ExhibitionListCreate() {
     // 주소 선택 완료
     const handleComplete = (data: Address) => {
         setAddress(data.address);
+        setSelectedValues((prev) => ({
+            ...prev,
+            postalCode: data.zonecode,
+        }));
         setIsPostcodeOpen(false);
     };
 
@@ -111,7 +131,7 @@ export default function ExhibitionListCreate() {
         }));
     };
 
-    // 정기 휴무 핸들러
+    // 정기 휴무일 체크
     const handleDayOffChange = (day: string, checked: boolean) => {
         setSelectedValues((prev) => {
             const newDays = checked ? [...prev.dayOff, day] : prev.dayOff.filter((d) => d !== day);
@@ -145,14 +165,93 @@ export default function ExhibitionListCreate() {
         return true;
     };
 
-    // 정기 휴무 옵션 생성
+    // 제출 핸들러
+    const handleSubmitExhibition = async () => {
+        if (!validateForm()) return;
+
+        setIsSubmitting(true);
+
+        try {
+            const exhibitionData: CreateExhibitionRequest = {
+                title,
+                description,
+                startDate,
+                endDate,
+                openingHour: `${selectedValues.startTime}-${selectedValues.endTime}`,
+                homepageUrl: selectedValues.link || '',
+
+                category: (() => {
+                    const map: Record<string, CategoryType> = {
+                        '회화': 'PAINTING',
+                        '조각·설치': 'SCULPTURE_INSTALLATION',
+                        '공예·디자인': 'CRAFT_DESIGN',
+                        '사진·미디어 아트': 'PHOTO_MEDIA_ART',
+                    };
+                    return map[selectedValues.type] as CategoryType;
+                })(),
+
+                type: selectedValues.form === '개인전' ? 'PERSON' : 'GROUP',
+
+                mood: (() => {
+                    const map: Record<string, MoodType> = {
+                        '혼자 보기 좋은': 'SOLO',
+                        '데이트 하기 좋은': 'DATE',
+                        '트렌디한 MZ 감성이 있는': 'TRENDY',
+                        '가족과 즐기기 좋은': 'FAMILY',
+                    };
+                    return map[selectedValues.mood] as MoodType;
+                })(),
+
+                price: selectedValues.priceOption === '무료' ? 0 : parseInt(selectedValues.price.replace(/[^0-9]/g, '')) || 0,
+
+                facility: Object.entries(facilities)
+                    .filter(([, checked]) => checked)
+                    .map(([key]) => {
+                        const map: Record<string, FacilityType> = {
+                            wifi: 'WIFI',
+                            restroom: 'RESTROOM',
+                            stroller: 'STROLLER_RENTAL',
+                        };
+                        return map[key];
+                    }),
+
+                address: {
+                    roadAddress: address,
+                    jibunAddress: address,
+                    postalCode: selectedValues.postalCode || '',
+                    detail: detailAddress,
+                },
+                images: imageFiles,
+            };
+
+            console.log('exhibitionData', exhibitionData);
+
+            const response = await createExhibition(exhibitionData, imageFiles);
+
+            if (response.isSuccess) {
+                setStep(0);
+            } else {
+                alert(response.message || '전시 등록에 실패했습니다.');
+            }
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message?: string }>;
+            console.error('Exhibition submission error:', axiosError);
+
+            const errorMessage = axiosError.response?.data?.message || '전시 등록 중 오류가 발생했습니다.';
+            alert(errorMessage);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // 정기 휴무일 옵션
     const dayOffOptions = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'].map((day) => ({
         value: day,
         label: day,
         checked: selectedValues.dayOff.includes(day),
     }));
 
-    // 시설 옵션 생성
+    // 시설 옵션
     const facilityOptions = [
         { label: '와이파이', value: 'wifi', checked: facilities.wifi },
         { label: '화장실', value: 'restroom', checked: facilities.restroom },
@@ -438,7 +537,7 @@ export default function ExhibitionListCreate() {
                 <button
                     className="w-[170px] h-[60px] rounded-[50px] bg-white text-lg text-primary-300 border border-primary-300"
                     onClick={() =>
-                        navigate('/exhibitions/1/preview', {
+                        navigate('/exhibitions/preview', {
                             state: {
                                 title,
                                 description,
@@ -467,12 +566,9 @@ export default function ExhibitionListCreate() {
 
                 <button
                     className="w-[170px] h-[60px] rounded-[50px] text-white text-lg"
-                    style={{ backgroundColor: 'var(--color-primary-300)', border: `1px solid var(--color-primary-300)` }}
-                    onClick={() => {
-                        if (validateForm()) {
-                            setStep(0);
-                        }
-                    }}
+                    style={{ backgroundColor: 'var(--color-primary-300)', border: `1px solid var(--color-primary-300)`, opacity: isSubmitting ? 0.7 : 1 }}
+                    onClick={handleSubmitExhibition}
+                    disabled={isSubmitting}
                 >
                     등록하기
                 </button>

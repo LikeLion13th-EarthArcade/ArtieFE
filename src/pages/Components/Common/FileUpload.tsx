@@ -1,3 +1,5 @@
+import { X } from 'lucide-react';
+
 interface FileUploadProps {
     label: string;
     files: File[];
@@ -28,6 +30,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         onChange(newFiles);
     };
 
+    const handleRemoveFile = (index: number) => {
+        const newFiles = files.filter((_, i) => i !== index);
+        onChange(newFiles);
+    };
+
     const inputId = `fileInput-${label.replace(/\s+/g, '-').toLowerCase()}`;
 
     return (
@@ -45,7 +52,22 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                 ) : (
                     <div className="w-full flex flex-col gap-2">
                         {files.map((file, index) => (
-                            <div key={index}>{file.name}</div>
+                            <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                                {/* 이미지 미리보기 */}
+                                {file.type.startsWith('image/') && (
+                                    <img src={URL.createObjectURL(file)} alt={file.name} className="w-16 h-16 object-cover rounded mr-2" />
+                                )}
+                                <span className="flex-1 truncate">{file.name}</span>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveFile(index);
+                                    }}
+                                    className="text-primary-300 ml-2"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
                         ))}
                     </div>
                 )}
