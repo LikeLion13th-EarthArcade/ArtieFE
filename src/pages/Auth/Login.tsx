@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { emailAuthRequest, emailAuthVerify, signup, login } from '@/api/auth/auth';
+import { emailAuthRequest, emailAuthVerify, signup, login, csrfToken } from '@/api/auth/auth';
 import { useMutation } from '@tanstack/react-query';
 
 import { useNavigate } from 'react-router-dom';
@@ -105,6 +105,7 @@ export default function Login() {
     const loginMutation = useMutation({
         mutationFn: ({ email, password }: { email: string; password: string }) => login({ email, password }),
         onSuccess: (data) => {
+            csrfToken();
             console.log('로그인 성공:', data);
             setLoginState(data.result);
             navigate('/home');
