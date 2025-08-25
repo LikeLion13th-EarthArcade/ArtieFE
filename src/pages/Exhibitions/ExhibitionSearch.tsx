@@ -184,6 +184,7 @@ export default function ExhibitionSearch() {
                                     <ExhibitionMiniCard
                                         key={ex.exhibitionId}
                                         ex={{
+                                            exhibitionId: ex.exhibitionId,
                                             title: ex.title,
                                             image: ex.thumbnail,
                                             period: `${ex.startDate} ~ ${ex.endDate}`,
