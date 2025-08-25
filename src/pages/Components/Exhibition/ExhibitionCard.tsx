@@ -6,6 +6,19 @@ interface ExhibitionCardProps {
     exhibition: Iexhibition;
 }
 
+const categoryMap: Record<string, string> = {
+    PAINTING: '회화',
+    SCULPTURE_INSTALLATION: '조각',
+    CRAFT_DESIGN: '공예',
+    PHOTO_MEDIA_ART: '사진미디어 아트',
+};
+const moodMap: Record<string, string> = {
+    SOLO: '1인 관람',
+    DATE: '데이트',
+    FAMILY: '가족 관람',
+    FRIENDS: '친구와 관람',
+};
+
 export default function ExhibitionCard({ exhibition }: ExhibitionCardProps) {
     // const [liked, setLiked] = useState(exhibition.isLiked);
     const navigate = useNavigate();
@@ -23,8 +36,15 @@ export default function ExhibitionCard({ exhibition }: ExhibitionCardProps) {
     };
 
     const getCategoryHashtags = (category: string, mood: string) => {
-        const hashtags = [category];
-        if (mood) hashtags.push(mood);
+        const hashtags: string[] = [];
+
+        // categoryMap에 존재하면 매핑된 값 사용, 아니면 그대로
+        if (categoryMap[category]) hashtags.push(categoryMap[category]);
+        else hashtags.push(category);
+
+        // moodMap 적용
+        if (mood && moodMap[mood]) hashtags.push(moodMap[mood]);
+
         return hashtags;
     };
 
