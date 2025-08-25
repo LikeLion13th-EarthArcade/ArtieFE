@@ -30,3 +30,21 @@ export const modify = async (data: TModifyAuthRequest): Promise<TModifyAuthRespo
     const response = await axiosInstance.patch('/api/v1/users', data);
     return response.data;
 };
+
+function getCookie(name: string) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift();
+}
+
+export const sendCode = (email: string) => {
+    return axiosInstance.post(
+        `/auth/send-code?email=${encodeURIComponent(email)}`,
+        {},
+        {
+            headers: {
+                'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '',
+            },
+        },
+    );
+};
