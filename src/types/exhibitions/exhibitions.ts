@@ -87,9 +87,11 @@ export interface ExhibitionDetail {
     imageFileKeys: string[];
     homepageUrl: string;
     address: string;
-    category: 'PAINTING' | 'SCULPTURE' | 'INSTALLATION' | 'MEDIA' | 'PHOTO' | string;
+    latitude: number;
+    longitude: number;
+    category: 'PAINTING' | 'SCULPTURE_INSTALLATION' | 'CRAFT_DESIGN' | 'PHOTO_MEDIA_ART' | string;
     type: 'PERSON' | 'GROUP' | string;
-    mood: 'SOLO' | 'DATE' | 'FAMILY' | 'FRIENDS' | string;
+    mood: 'SOLO' | 'DATE' | 'FAMILY' | 'TRENDY' | string;
     price: number;
     facility: string[];
     reviews: Review[];

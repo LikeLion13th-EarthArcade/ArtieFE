@@ -7,6 +7,7 @@ import ReviewTab from '../Components/Exhibition/ReviewTab';
 import { useQuery } from '@tanstack/react-query';
 import { getExhibitionDetail } from '@/api/exhibitions/exhibitions';
 import type { ExhibitionDetail } from '@/types/exhibitions/exhibitions';
+import KakaoMap from '../Components/Common/kakaomap';
 
 const facilityMap: Record<string, string> = {
     RESTROOM: '화장실',
@@ -16,9 +17,9 @@ const facilityMap: Record<string, string> = {
 
 const categoryMap: Record<string, string> = {
     PAINTING: '회화',
-    SCULPTURE_INSTALLATION: '조각',
-    CRAFT_DESIGN: '공예',
-    PHOTO_MEDIA_ART: '사진미디어 아트',
+    SCULPTURE_INSTALLATION: '조각•설치',
+    CRAFT_DESIGN: '공예•디자인',
+    PHOTO_MEDIA_ART: '사진•미디어 아트',
 };
 
 const typeMap: Record<string, string> = {
@@ -30,7 +31,7 @@ const moodMap: Record<string, string> = {
     SOLO: '1인 관람',
     DATE: '데이트',
     FAMILY: '가족 관람',
-    FRIENDS: '친구와 관람',
+    TRENDY: 'MZ',
 };
 
 export default function ExhibitionDetail() {
@@ -55,7 +56,6 @@ export default function ExhibitionDetail() {
 
     return (
         <div className="flex flex-col justify-center px-10 py-8 max-w-5xl mx-auto">
-            {/* 제목 & 카테고리 */}
             <div className="flex justify-between items-center flex-wrap gap-4">
                 <div className="flex gap-3">
                     <h1 className="text-3xl font-bold">{exhibition?.title}</h1>
@@ -130,12 +130,10 @@ export default function ExhibitionDetail() {
                 </ul>
             </div>
 
-            {/* 지도 */}
             <div className="mt-10">
                 <h2 className="text-xl font-semibold mb-3">위치 안내</h2>
-                <div className="w-full h-[300px] bg-gray-200 rounded-2xl flex items-center justify-center text-gray-500">지도 API 들어갈 자리</div>
+                <KakaoMap latitude={exhibition?.latitude} longitude={exhibition?.longitude} placeName={exhibition?.address} />
             </div>
-
             {/* 리뷰 */}
             <div className="mt-8 gap-4">
                 <div className="flex flex-wrap justify-between items-center mb-6">
