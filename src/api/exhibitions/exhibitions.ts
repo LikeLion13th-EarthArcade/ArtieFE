@@ -1,6 +1,7 @@
 import { axiosInstance } from '@/api/axiosInstance';
 import type { TCommonResponse } from '../../types/common/common';
-import type { CreateExhibitionRequest, ExhibitionSearchParams, ExhibitionSearchResponse } from '@/types/exhibitions/exhibitions';
+import type { CreateExhibitionRequest, ExhibitionDetailResponse, ExhibitionSearchParams, ExhibitionSearchResponse } from '@/types/exhibitions/exhibitions';
+import type { AxiosResponse } from 'axios';
 
 // 전시 생성
 export const createExhibition = async (exhibitionData: CreateExhibitionRequest, images: File[]): Promise<TCommonResponse<string>> => {
@@ -26,5 +27,10 @@ export const searchExhibitions = async (params: ExhibitionSearchParams): Promise
     const response = await axiosInstance.get('/api/v1/exhibitions/search', {
         params,
     });
+    return response.data;
+};
+
+export const getExhibitionDetail = async (exhibitionId: number) => {
+    const response: AxiosResponse<ExhibitionDetailResponse> = await axiosInstance.get(`/api/v1/exhibitions/${exhibitionId}`);
     return response.data;
 };

@@ -67,3 +67,32 @@ export interface ExhibitionSearchResponse {
         defaultCenterLng: number;
     };
 }
+
+export interface Review {
+    reviewId: number;
+    rating: number;
+    content: string;
+    imageUrls: string[];
+    createdAt: string;
+    userName: string;
+}
+
+export interface ExhibitionDetail {
+    exhibitionId: number;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    openingTime: string;
+    imageFileKeys: string[];
+    homepageUrl: string;
+    address: string;
+    category: 'PAINTING' | 'SCULPTURE' | 'INSTALLATION' | 'MEDIA' | 'PHOTO' | string;
+    type: 'PERSON' | 'GROUP' | string;
+    mood: 'SOLO' | 'DATE' | 'FAMILY' | 'FRIENDS' | string;
+    price: number;
+    facility: string[];
+    reviews: Review[];
+}
+
+export type ExhibitionDetailResponse = TCommonResponse<ExhibitionDetail>;
