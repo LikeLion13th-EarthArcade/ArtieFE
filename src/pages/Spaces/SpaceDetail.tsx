@@ -11,7 +11,6 @@ import { FaQuestionCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import Gallery from '../Components/Exhibition/Gallery';
-import ReviewTab from '../Components/Exhibition/ReviewTab';
 
 export default function SpaceDetail() {
     const navigate = useNavigate();
@@ -141,11 +140,7 @@ export default function SpaceDetail() {
                         리뷰 작성하기
                     </button>
                 </div>
-                <div className="flex flex-col gap-4">
-                    <ReviewTab />
-                    <ReviewTab />
-                    <ReviewTab />
-                </div>
+                <div className="flex flex-col gap-4"></div>
             </div>
         </div>
     );
