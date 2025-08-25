@@ -31,3 +31,39 @@ export interface CreateExhibitionRequest {
 export type CreateExhibitionResponse = TCommonResponse<{
     result: string;
 }>;
+
+export interface ExhibitionSearchParams {
+    category?: string;
+    distinct?: string;
+    mood?: string;
+    localDate?: string;
+    sort?: 'NEW' | 'OLD' | 'POPULAR';
+    page?: number;
+}
+
+export interface ExhibitionSearchItem {
+    exhibitionId: number;
+    title: string;
+    thumbnail: string;
+    startDate: string;
+    endDate: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+export interface ExhibitionSearchResponse {
+    items: ExhibitionSearchItem[];
+    pageInfo: {
+        page: number;
+        size: number;
+        totalElements: number;
+        totalPages: number;
+        first: boolean;
+        last: boolean;
+    };
+    map: {
+        defaultCenterLat: number;
+        defaultCenterLng: number;
+    };
+}

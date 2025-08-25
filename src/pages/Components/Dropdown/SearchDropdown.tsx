@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import SearchIcon from '../../../icons/search.svg';
 import LeftFilledArrow from '../../../icons/left-filled-arrow.svg';
 import RightFilledArrow from '../../../icons/right-filled-arrow.svg';
 
@@ -80,18 +79,6 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
 // 구분선
 function Divider() {
     return <div className="w-[1px] h-[60%] bg-default-gray-400" />;
-}
-
-// 검색 버튼
-function SearchBtn({ onClick }: { onClick: () => void }) {
-    return (
-        <div
-            onClick={onClick}
-            className="flex-shrink-0 w-[45px] h-[45px] bg-primary-300 flex items-center justify-center cursor-pointer shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-full"
-        >
-            <img src={SearchIcon} alt="검색 이미지" className="w-[20px] h-[20px] object-contain" />
-        </div>
-    );
 }
 
 // 날짜 선택기
@@ -232,9 +219,9 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
     );
 }
 
-export default function SearchDropdown({ selectedOptions, onDropdownChange, dropdowns, onSearch }: DropdownProps) {
+export default function SearchDropdown({ selectedOptions, onDropdownChange, dropdowns }: DropdownProps) {
     return (
-        <div className="flex justify-center items-center py-8 gap-6 w-[70%] mx-auto px-4">
+        <div className="flex justify-center items-center py-8 gap-6 w-[70%] mx-auto">
             <div className="w-full flex-1 max-w-[1365px] h-[55px] bg-white shadow-md rounded-[40px] flex items-center">
                 {dropdowns.map((dd, idx) => (
                     <div key={dd.key} className="flex items-center h-full flex-1 min-w-0">
@@ -252,7 +239,6 @@ export default function SearchDropdown({ selectedOptions, onDropdownChange, drop
                     </div>
                 ))}
             </div>
-            <SearchBtn onClick={onSearch} />
         </div>
     );
 }
