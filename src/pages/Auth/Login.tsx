@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { emailAuthRequest, emailAuthVerify, signup, login, csrfToken } from '@/api/auth/auth';
+import { emailAuthRequest, emailAuthVerify, signup, login } from '@/api/auth/auth';
 import { useMutation } from '@tanstack/react-query';
 
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login: setLoginState } = useAuth(); // useAuth 가져오기
+    const { login: setLoginState } = useAuth();
     const slides = [
         { id: 1, title: '아띠는 친한 친구라는 순우리말이에요. ', middle: '전시가 처음이라 막막해도 괜찮아요.', desc: 'Artie가 옆에서 같이 찾아줄게요.' },
         { id: 2, title: '어디서 전시를 시작해야 할지 몰랐다면', middle: 'Artie가 당신의 전시에 어울리는 공간을', desc: '큐레이션합니다.' },
@@ -21,7 +21,7 @@ export default function Login() {
     // 입력값 상태
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordConfirmation, setpasswordConfirmation] = useState('');
     const [name, setName] = useState('');
 
     // 포커스 상태
@@ -38,7 +38,7 @@ export default function Login() {
 
     // 비밀번호 표시 여부
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showpasswordConfirmation, setShowpasswordConfirmation] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -50,7 +50,7 @@ export default function Login() {
     useEffect(() => {
         setEmail('');
         setPassword('');
-        setConfirmPassword('');
+        setpasswordConfirmation('');
         setName('');
         setVerificationCode('');
         setIsVerificationSent(false);
@@ -105,7 +105,6 @@ export default function Login() {
     const loginMutation = useMutation({
         mutationFn: ({ email, password }: { email: string; password: string }) => login({ email, password }),
         onSuccess: (data) => {
-            csrfToken();
             console.log('로그인 성공:', data);
             setLoginState(data.result);
             navigate('/home');
@@ -117,7 +116,8 @@ export default function Login() {
     });
 
     const signupMutation = useMutation({
-        mutationFn: ({ email, password, name }: { email: string; password: string; name: string }) => signup({ email, password, name }),
+        mutationFn: ({ email, password, passwordConfirmation, name }: { email: string; password: string; passwordConfirmation: string; name: string }) =>
+            signup({ email, password, passwordConfirmation, name }),
         onSuccess: (data) => {
             console.log('회원가입 성공:', data);
             alert('회원가입이 완료되었습니다!');
@@ -137,11 +137,11 @@ export default function Login() {
                 alert('이메일 인증을 완료해주세요.');
                 return;
             }
-            if (password !== confirmPassword) {
+            if (password !== passwordConfirmation) {
                 alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
                 return;
             }
-            signupMutation.mutate({ email, password, name });
+            signupMutation.mutate({ email, password, passwordConfirmation, name });
         }
     };
 
@@ -311,25 +311,25 @@ export default function Login() {
                     {/* 회원가입 전용 - 비밀번호 확인 */}
                     {authMode === 'signup' && (
                         <div
-                            className={`mb-5 flex flex-col gap-1 transition-colors ${confirmFocused || confirmPassword ? 'text-primary-300' : 'text-gray-400'}`}
+                            className={`mb-5 flex flex-col gap-1 transition-colors ${confirmFocused || passwordConfirmation ? 'text-primary-300' : 'text-gray-400'}`}
                         >
                             <p className="text-sm transition-colors">비밀번호 확인</p>
                             <div className="relative">
                                 <input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    value={confirmPassword}
+                                    type={showpasswordConfirmation ? 'text' : 'password'}
+                                    value={passwordConfirmation}
                                     onFocus={() => setConfirmFocused(true)}
                                     onBlur={() => setConfirmFocused(false)}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    onChange={(e) => setpasswordConfirmation(e.target.value)}
                                     placeholder="비밀번호를 한번 더 입력해주세요."
                                     className="border border-gray-300 p-2 w-full rounded pr-10 text-gray-900 focus:border-primatext-primary-300 focus:outline-none transition-colors focus:placeholder-transparent"
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                    onClick={() => setShowpasswordConfirmation((prev) => !prev)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                                 >
-                                    {showConfirmPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                                    {showpasswordConfirmation ? <Eye size={18} /> : <EyeOff size={18} />}
                                 </button>
                             </div>
                         </div>
