@@ -5,8 +5,7 @@ export type TCommonResponse<T> = {
     code: string;
     message: string;
     result: T;
-    success: boolean;
-};
+}; //응답 type 정의
 
 export type TResponseError = AxiosError<{
     statusCode: number;

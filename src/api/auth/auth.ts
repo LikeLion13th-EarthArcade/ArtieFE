@@ -1,18 +1,29 @@
-import { axiosInstance } from '@/api/axiosInstance';
-import type { TEmailAuthRequest, TModifyAuthRequest, TModifyAuthResponse } from '@/types/auth/auth';
+import type { TEmailAuthRequest, TEmailAuthResponse, TModifyAuthRequest, TModifyAuthResponse } from '@/types/auth/auth';
+import { axiosInstance } from '../axiosInstance';
 
 export const emailAuthRequest = async ({ email }: { email: string }): Promise<TEmailAuthRequest> => {
-    const { data } = await axiosInstance.post(`/api/v1/auth/send-code?email=${encodeURIComponent(email)}`);
+    const { data } = await axiosInstance.post('/api/v1/validations/code/sign-up', { email });
     return data;
 };
 
-export const emailAuthVerify = async ({ email, code }: { email: string; code: string }) => {
-    const { data } = await axiosInstance.post(`/api/v1/auth/verify-code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`, {});
+export const emailAuthVerify = async ({ email, code }: { email: string; code: string }): Promise<TEmailAuthResponse> => {
+    const { data } = await axiosInstance.post('/api/v1/validations/code/confirmation', { email, code });
     return data;
 };
 
-export const signup = async ({ email, password, name }: { email: string; password: string; name: string }) => {
-    const { data } = await axiosInstance.post('/api/v1/auth/signup', { email, password, name });
+// 매개변수 추가 passwordConfirmation
+export const signup = async ({
+    email,
+    password,
+    passwordConfirmation,
+    name,
+}: {
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+    name: string;
+}) => {
+    const { data } = await axiosInstance.post('/api/v1/users', { email, password, passwordConfirmation, name });
     return data;
 };
 
@@ -20,31 +31,7 @@ export const login = async ({ email, password }: { email: string; password: stri
     const { data } = await axiosInstance.post('/api/v1/auth/login', { email, password });
     return data;
 };
-
-export const csrfToken = async () => {
-    const { data } = await axiosInstance.get('/api/v1/auth/csrf');
-    return data;
-};
-
 export const modify = async (data: TModifyAuthRequest): Promise<TModifyAuthResponse> => {
     const response = await axiosInstance.patch('/api/v1/users', data);
     return response.data;
-};
-
-function getCookie(name: string) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift();
-}
-
-export const sendCode = (email: string) => {
-    return axiosInstance.post(
-        `/auth/send-code?email=${encodeURIComponent(email)}`,
-        {},
-        {
-            headers: {
-                'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '',
-            },
-        },
-    );
 };

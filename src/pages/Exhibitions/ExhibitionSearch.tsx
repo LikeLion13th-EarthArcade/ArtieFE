@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import SearchDropdown from '../Components/Dropdown/SearchDropdown';

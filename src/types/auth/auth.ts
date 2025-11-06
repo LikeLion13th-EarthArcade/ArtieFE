@@ -33,7 +33,7 @@ export type TEmailAuthRequest = TCommonResponse<{
 }>;
 //이메일 인증 코드 검증 응답 타입
 export type TEmailAuthResponse = TCommonResponse<{
-    result: boolean;
+    result: string;
 }>;
 
 //회원 정보 수정 post 타입
