@@ -91,10 +91,6 @@ export default function HomePage() {
             return Array.isArray(res.result) ? res.result : [];
         },
     });
-
-    console.log('recommended', artierecommended);
-    console.log('Hot Now data:', hotnow);
-    console.log('사용자 정보:', user);
     return (
         <div className="min-h-screen">
             {/* Banner */}

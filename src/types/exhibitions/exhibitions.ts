@@ -84,17 +84,18 @@ export interface ExhibitionDetail {
     startDate: string;
     endDate: string;
     openingTime: string;
-    imageFileKeys: string[];
-    homepageUrl: string;
+    operatingInfo: string;
+    imageUrls: string[];
+    WebsiteUrl: string;
     address: string;
     latitude: number;
     longitude: number;
-    category: 'PAINTING' | 'SCULPTURE_INSTALLATION' | 'CRAFT_DESIGN' | 'PHOTO_MEDIA_ART' | string;
-    type: 'PERSON' | 'GROUP' | string;
-    mood: 'SOLO' | 'DATE' | 'FAMILY' | 'TRENDY' | string;
+    exhibitionCategory: 'PAINTING' | 'SCULPTURE_INSTALLATION' | 'CRAFT_DESIGN' | 'PHOTO_MEDIA_ART' | string;
+    exhibitionType: 'PERSON' | 'GROUP' | string;
+    exhibitionMood: 'SOLO' | 'DATE' | 'FAMILY' | 'TRENDY' | string;
     price: number;
-    facility: string[];
-    reviews: Review[];
+    facilities: string[];
+    liked: boolean;
 }
 
 export type ExhibitionDetailResponse = TCommonResponse<ExhibitionDetail>;
