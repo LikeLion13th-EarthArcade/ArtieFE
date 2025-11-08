@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { emailAuthRequest, emailAuthVerify, signup, login } from '@/api/auth/auth';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 export default function Login() {
     const navigate = useNavigate();
     const { login: setLoginState } = useAuth();
+    const qlient = useQueryClient();
     const slides = [
         { id: 1, title: '아띠는 친한 친구라는 순우리말이에요. ', middle: '전시가 처음이라 막막해도 괜찮아요.', desc: 'Artie가 옆에서 같이 찾아줄게요.' },
         { id: 2, title: '어디서 전시를 시작해야 할지 몰랐다면', middle: 'Artie가 당신의 전시에 어울리는 공간을', desc: '큐레이션합니다.' },
@@ -105,7 +106,9 @@ export default function Login() {
     const loginMutation = useMutation({
         mutationFn: ({ email, password }: { email: string; password: string }) => login({ email, password }),
         onSuccess: (data) => {
-            console.log('로그인 성공:', data);
+            console.log('로그인 성공');
+            qlient.invalidateQueries({ queryKey: ['users'] });
+            login(data.result);
             setLoginState(data.result);
             navigate('/home');
         },
