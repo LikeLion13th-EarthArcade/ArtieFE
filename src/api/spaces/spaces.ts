@@ -1,8 +1,21 @@
 import type { getSpaceListResponse, CreateSpaceRequest } from '@/types/spaces/spaces';
 import { axiosInstance } from '../axiosInstance';
 
-export const getSpaceList = async () => {
-    const data = await axiosInstance.get<getSpaceListResponse>('/api/v1/spaces');
+export interface SpaceListParams {
+    location?: string;
+    spec?: string;
+    purpose?: string;
+    concept?: string;
+    startDate?: string;
+    endDate?: string;
+    page?: number;
+    size?: number;
+}
+
+export const getSpaceList = async (params?: SpaceListParams) => {
+    const { data } = await axiosInstance.get<getSpaceListResponse>('/api/v1/spaces', {
+        params,
+    });
     return data;
 };
 

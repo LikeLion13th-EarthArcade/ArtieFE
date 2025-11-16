@@ -7,7 +7,7 @@ interface SpaceMiniCardProps {
 
 export default function SpaceMiniCard({ space }: SpaceMiniCardProps) {
     return (
-        <div className="w-full h-[290px] rounded-2xl border border-primary-300 shadow-[0_4px_10px_0_rgba(0,0,0,0.1)] p-4">
+        <div className="w-full h-[290px] rounded-2xl border border-primary-300 shadow-[0_4px_10px_0_rgba(0,0,0,0.1)] p-4 flex flex-col justify-center">
             <img src={Sample1} alt="전시 공간 사진입니다." className="rounded-xl w-full h-[130px] object-cover" />
             <h3 className="text-base mt-3">{space.name}</h3>
             <div className="mt-2 grid grid-rows-1 gap-1">

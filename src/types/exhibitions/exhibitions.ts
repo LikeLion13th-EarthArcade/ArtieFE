@@ -14,18 +14,29 @@ export interface Address {
 
 export interface CreateExhibitionRequest {
     images?: File[];
-    homepageUrl: string;
-    facility: FacilityType[];
-    price: number;
-    endDate: string;
-    startDate: string;
-    address: Address;
-    mood: MoodType;
+
     title: string;
-    type: ExhibitionType;
-    openingHour: string;
     description: string;
-    category: CategoryType;
+
+    startDate: string;
+    endDate: string;
+
+    openingTime: string;
+    closingTime: string;
+
+    exhibitionCategory: CategoryType;
+    exhibitionType: ExhibitionType;
+    exhibitionMood: MoodType;
+
+    price: number;
+
+    facilities: FacilityType[];
+
+    operatingInfo: string;
+
+    homepageUrl: string;
+
+    address: Address;
 }
 
 export type CreateExhibitionResponse = TCommonResponse<{

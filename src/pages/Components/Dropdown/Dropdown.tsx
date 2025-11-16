@@ -24,9 +24,10 @@ const Dropdown: React.FC<DropdownProps> = ({ id, label, helperText, options, pla
             {helperText && <span className="text-default-gray-500 text-sm">{helperText}</span>}
             <div
                 className={`rounded-lg p-3 w-full min-h-[50px] border border-primary-300 flex justify-between items-center cursor-pointer ${!selected ? 'text-default-gray-600' : 'text-black'}`}
+                style={{ minWidth: 'max-content' }}
                 onClick={() => onToggle(id)}
             >
-                <span className="pr-2">{selected || placeholder}</span>
+                <span className="pr-2 whitespace-nowrap">{selected || placeholder}</span>
                 <ChevronDown size={20} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </div>
 
