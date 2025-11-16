@@ -59,14 +59,18 @@ export default function ExhibitionCard({ exhibition }: ExhibitionCardProps) {
     // };
 
     return (
-        <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto items-stretch">
             {/* 포스터 이미지 */}
             <div className="w-full md:w-1/2 relative flex justify-center items-center">
-                <img src={exhibition.thumbnail} alt={exhibition.title} className="w-[90%] md:w-[80%] h-auto object-cover rounded-lg shadow mb-4 md:mb-0" />
+                <img
+                    src={exhibition.thumbnail}
+                    alt={exhibition.title}
+                    className="w-[90%] md:w-[80%] aspect-[3/4] object-cover rounded-lg shadow mb-4 md:mb-0"
+                />
             </div>
 
             {/* 전시 정보 */}
-            <div className="w-full md:w-1/2 p-4 md:p-6 rounded-xl overflow-hidden shadow-md relative flex flex-col justify-between">
+            <div className="w-full md:w-1/2 p-4 md:p-6 rounded-xl overflow-hidden shadow-md relative flex flex-col justify-between h-full">
                 {/* 좋아요 버튼 */}
                 {/* <button className="absolute top-3 right-3 md:top-4 md:right-4">
                     <Heart size={24} className={liked ? 'fill-red-500 text-red-500' : 'text-gray-400'} />

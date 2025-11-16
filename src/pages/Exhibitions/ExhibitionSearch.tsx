@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import SearchDropdown from '../Components/Dropdown/SearchDropdown';
 import ExhibitionMiniCard from '../Components/Exhibition/ExhibitionMiniCard';
@@ -63,7 +62,7 @@ export default function ExhibitionSearch() {
         setCurrentPage(1);
     };
 
-    const fetchExhibitions = async () => {
+    const fetchExhibitions = useCallback(async () => {
         try {
             const apiParams = {
                 category: categoryMap[filters.type] || undefined,
@@ -76,25 +75,30 @@ export default function ExhibitionSearch() {
 
             console.log('현재 필터:', filters);
             console.log('API 파라미터:', apiParams);
-            console.log('실제 전송되는 파라미터:', JSON.stringify(apiParams, null, 2));
 
             const res = await searchExhibitions(apiParams);
 
             console.log('API 응답:', res);
-            console.log('아이템 개수:', res.result?.items?.length || 0);
 
-            if (res.isSuccess) {
-                setExhibitions(res.result.items);
-                setTotalPages(res.result.pageInfo.totalPages);
+            if (res.isSuccess && res.result) {
+                const items = Array.isArray(res.result.items) ? res.result.items : [];
+
+                setExhibitions(items);
+                setTotalPages(res.result.pageInfo?.totalPages ?? 1);
+            } else {
+                setExhibitions([]);
+                setTotalPages(1);
             }
         } catch (err) {
             console.error('전시 검색 실패:', err);
+            setExhibitions([]);
+            setTotalPages(1);
         }
-    };
+    }, [filters, selectedSort, currentPage]);
 
     useEffect(() => {
         fetchExhibitions();
-    }, [filters, selectedSort, currentPage]);
+    }, [fetchExhibitions]);
 
     return (
         <>
