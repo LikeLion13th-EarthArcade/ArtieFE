@@ -43,6 +43,13 @@ export type CreateExhibitionResponse = TCommonResponse<{
     result: string;
 }>;
 
+export type TExhibitonLikedResponse = TCommonResponse<{
+    result: {
+        exhibition: number;
+        message: string;
+    };
+}>;
+
 export interface ExhibitionSearchParams {
     category?: string;
     distinct?: string;

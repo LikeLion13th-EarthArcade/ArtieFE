@@ -15,6 +15,10 @@ export interface Iexhibition {
     isLiked: boolean;
 }
 
-export type TexhibitionCard = TCommonResponse<{
-    result: Iexhibition[];
-}>;
+// AI 추천 전시 응답 타입
+export interface IExhibitionResult extends Iexhibition {
+    eligible: boolean;
+}
+
+// AI 추천 전시 전체 응답 타입
+export type TairecommendedResponse = TCommonResponse<IExhibitionResult[]>; //map -> IExhibitionResult[] 참고
