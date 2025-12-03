@@ -51,9 +51,9 @@ export type TExhibitonLikedResponse = TCommonResponse<{
 }>;
 
 export interface ExhibitionSearchParams {
-    category?: string;
+    category?: CategoryType;
     distinct?: string;
-    mood?: string;
+    mood?: MoodType;
     localDate?: string;
     sort?: 'NEW' | 'OLD' | 'POPULAR';
     page?: number;
@@ -70,20 +70,21 @@ export interface ExhibitionSearchItem {
     longitude: number;
 }
 
+export interface ExhibitionSearchPage {
+    content: ExhibitionSearchItem[];
+    last: boolean;
+    pageNumber: number;
+    pageSize: number;
+    totalElements: number;
+    totalPages: number;
+}
+
 export interface ExhibitionSearchResponse {
-    items: ExhibitionSearchItem[];
-    pageInfo: {
-        page: number;
-        size: number;
-        totalElements: number;
-        totalPages: number;
-        first: boolean;
-        last: boolean;
-    };
     map: {
         defaultCenterLat: number;
         defaultCenterLng: number;
     };
+    page: ExhibitionSearchPage;
 }
 
 export interface Review {

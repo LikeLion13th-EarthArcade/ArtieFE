@@ -31,10 +31,10 @@ const typeMap: Record<string, string> = {
 
 // 전시 분위기 mapping
 const moodMap: Record<string, string> = {
-    SOLO: '1인 관람',
-    DATE: '데이트',
-    FAMILY: '가족 관람',
-    TRENDY: 'MZ',
+    SOLO: '혼자 보기 좋은',
+    DATE: '데이트 하기 좋은',
+    TRENDY: '트렌디한 MZ 감성이 있는',
+    FAMILY: '가족과 즐기기 좋은',
 };
 
 export default function ExhibitionDetail() {

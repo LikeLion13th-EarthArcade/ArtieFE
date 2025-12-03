@@ -1,30 +1,39 @@
 import { useCallback, useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import SearchDropdown from '../Components/Dropdown/SearchDropdown';
 import ExhibitionMiniCard from '../Components/Exhibition/ExhibitionMiniCard';
 import Pagination from '../Components/Pagination/Pagination';
 import { searchExhibitions } from '@/api/exhibitions/exhibitions';
-import type { ExhibitionSearchItem } from '@/types/exhibitions/exhibitions';
+import type { CategoryType, MoodType, ExhibitionSearchItem } from '@/types/exhibitions/exhibitions';
 
-type FilterKey = 'type' | 'region' | 'format' | 'date';
+type FilterKey = 'type' | 'region' | 'mood' | 'date';
 
 export default function ExhibitionSearch() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [filters, setFilters] = useState({
-        type: '',
-        region: '',
-        format: '',
-        date: '',
+        type: searchParams.get('type') ?? '',
+        region: searchParams.get('region') ?? '',
+        mood: searchParams.get('mood') ?? '',
+        date: searchParams.get('date') ?? '',
     });
 
     const [exhibitions, setExhibitions] = useState<ExhibitionSearchItem[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(() => {
+        const pageParam = searchParams.get('page');
+        return pageParam ? Number(pageParam) : 1;
+    });
     const [totalPages, setTotalPages] = useState(1);
 
-    // 정렬 상태
-    const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-    const [selectedSort, setSelectedSort] = useState('최신순');
-
     const sortOptions = ['최신순', '인기순', '오래된순'];
+
+    const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+    const [selectedSort, setSelectedSort] = useState(() => {
+        const sortParam = searchParams.get('sort');
+        if (sortParam && sortOptions.includes(sortParam)) return sortParam;
+        return '최신순';
+    });
 
     const sortMap: Record<string, 'NEW' | 'OLD' | 'POPULAR'> = {
         최신순: 'NEW',
@@ -32,17 +41,18 @@ export default function ExhibitionSearch() {
         인기순: 'POPULAR',
     };
 
-    const categoryMap: Record<string, string> = {
+    const categoryMap: Record<string, CategoryType> = {
         '회화': 'PAINTING',
         '조각•설치': 'SCULPTURE_INSTALLATION',
         '공예•디자인': 'CRAFT_DESIGN',
         '사진•미디어 아트': 'PHOTO_MEDIA_ART',
     };
 
-    const moodMap: Record<string, string> = {
-        '전시회': 'SOLO',
-        '팝업 스토어': 'DATE',
-        '체험 전시': 'TRENDY',
+    const moodMap: Record<string, MoodType> = {
+        '혼자 보기 좋은': 'SOLO',
+        '데이트 하기 좋은': 'DATE',
+        '트렌디한 MZ 감성이 있는': 'TRENDY',
+        '가족과 즐기기 좋은': 'FAMILY',
     };
 
     // 정렬 토글
@@ -65,9 +75,9 @@ export default function ExhibitionSearch() {
     const fetchExhibitions = useCallback(async () => {
         try {
             const apiParams = {
-                category: categoryMap[filters.type] || undefined,
+                exhibitionCategory: categoryMap[filters.type] || undefined,
+                exhibitionMood: moodMap[filters.mood] || undefined,
                 distinct: filters.region || undefined,
-                mood: moodMap[filters.format] || undefined,
                 localDate: filters.date || undefined,
                 sort: sortMap[selectedSort],
                 page: currentPage - 1,
@@ -80,11 +90,14 @@ export default function ExhibitionSearch() {
 
             console.log('API 응답:', res);
 
-            if (res.isSuccess && res.result) {
-                const items = Array.isArray(res.result.items) ? res.result.items : [];
+            if (res.isSuccess && res.result && res.result.page) {
+                const { page } = res.result;
+
+                const items = Array.isArray(page.content) ? page.content : [];
+                console.log('파싱된 items:', items);
 
                 setExhibitions(items);
-                setTotalPages(res.result.pageInfo?.totalPages ?? 1);
+                setTotalPages(page.totalPages ?? 1);
             } else {
                 setExhibitions([]);
                 setTotalPages(1);
@@ -100,6 +113,20 @@ export default function ExhibitionSearch() {
         fetchExhibitions();
     }, [fetchExhibitions]);
 
+    useEffect(() => {
+        const params: Record<string, string> = {};
+
+        if (filters.type) params.type = filters.type;
+        if (filters.region) params.region = filters.region;
+        if (filters.mood) params.mood = filters.mood;
+        if (filters.date) params.date = filters.date;
+
+        params.sort = selectedSort;
+        params.page = String(currentPage);
+
+        setSearchParams(params, { replace: true });
+    }, [filters, selectedSort, currentPage, setSearchParams]);
+
     return (
         <>
             {/* 드롭다운 */}
@@ -107,7 +134,7 @@ export default function ExhibitionSearch() {
                 selectedOptions={filters}
                 onDropdownChange={updateFilter}
                 dropdowns={[
-                    { key: 'type', label: '전시 유형', options: ['회화', '조각•설치', '사진•미디어 아트'] },
+                    { key: 'type', label: '전시 유형', options: ['회화', '조각•설치', '공예•디자인', '사진•미디어 아트'] },
                     {
                         key: 'region',
                         label: '지역 선택',
@@ -140,7 +167,11 @@ export default function ExhibitionSearch() {
                         ],
                     },
 
-                    { key: 'format', label: '전시 형태', options: ['전시회', '팝업 스토어', '체험 전시'] },
+                    {
+                        key: 'mood',
+                        label: '전시 분위기',
+                        options: ['혼자 보기 좋은', '데이트 하기 좋은', '트렌디한 MZ 감성이 있는', '가족과 즐기기 좋은'],
+                    },
                     { key: 'date', label: '날짜', options: [] },
                 ]}
                 onSearch={fetchExhibitions}
@@ -184,7 +215,7 @@ export default function ExhibitionSearch() {
                 ) : (
                     <>
                         <div>
-                            <div className="grid grid-cols-4 gap-8 justify-center">
+                            <div className="grid grid-cols-4 gap-8 justify-center items-stretch">
                                 {exhibitions.map((ex) => (
                                     <ExhibitionMiniCard
                                         key={ex.exhibitionId}
