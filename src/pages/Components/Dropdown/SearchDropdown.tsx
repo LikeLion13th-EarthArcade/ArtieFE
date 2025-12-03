@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import LeftFilledArrow from '../../../icons/left-filled-arrow.svg';
 import RightFilledArrow from '../../../icons/right-filled-arrow.svg';
 
-type DropdownKey = 'type' | 'region' | 'format' | 'date';
+type DropdownKey = 'type' | 'region' | 'mood' | 'date';
 
 interface DropdownProps {
     selectedOptions: Record<DropdownKey, string>;
@@ -36,7 +36,7 @@ function SelectDropdown({ label, value, options, onChange }: { label: string; va
 
     return (
         <div className="flex-1 h-full flex items-center justify-between pl-12 pr-8 relative" ref={dropdownRef}>
-            <span className="text-base select-none cursor-pointer text-default-gray-700 text-center" onClick={() => setOpen(!open)}>
+            <span className="text-base select-none cursor-pointer text-default-gray-700 text-center whitespace-nowrap mx-auto" onClick={() => setOpen(!open)}>
                 {value || label}
             </span>
 
@@ -154,7 +154,7 @@ function DatePicker({ value, onChange }: { value: string; onChange: (date: strin
         <div className="flex-1 h-full flex items-center justify-between px-8 relative" ref={dropdownRef}>
             {/* 날짜 이동 버튼 */}
             <img src={LeftFilledArrow} alt="왼쪽" className="w-[20px] h-[20px] cursor-pointer" onClick={() => changeDate(-1)} />
-            <div className="flex items-center gap-2 text-base select-none cursor-pointer" onClick={() => setOpen(!open)}>
+            <div className="flex items-center gap-2 text-base text-default-gray-700 select-none cursor-pointer" onClick={() => setOpen(!open)}>
                 <span>{formatDisplayDate(value)}</span>
             </div>
             <img src={RightFilledArrow} alt="오른쪽" className="w-[20px] h-[20px] cursor-pointer" onClick={() => changeDate(1)} />
