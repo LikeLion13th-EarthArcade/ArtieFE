@@ -22,3 +22,6 @@ export interface IExhibitionResult extends Iexhibition {
 
 // AI 추천 전시 전체 응답 타입
 export type TairecommendedResponse = TCommonResponse<IExhibitionResult[]>; //map -> IExhibitionResult[] 참고
+
+// 일반 전시 리스트 응답 타입 (artie-recommendation / hot-now 공통)
+export type TExhibitionListResponse = TCommonResponse<Iexhibition[]>;

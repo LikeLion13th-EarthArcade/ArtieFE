@@ -72,11 +72,7 @@ export default function HomePage() {
         isError: isArtieError,
     } = useQuery<Iexhibition[]>({
         queryKey: ['artieRecommended'],
-        queryFn: async (): Promise<Iexhibition[]> => {
-            const res = await getartierecommended();
-            if (!res.result) return [];
-            return Array.isArray(res.result) ? res.result : [];
-        },
+        queryFn: getartierecommended,
     });
 
     const {
@@ -85,11 +81,7 @@ export default function HomePage() {
         isError: isHotError,
     } = useQuery<Iexhibition[]>({
         queryKey: ['hotnow'],
-        queryFn: async (): Promise<Iexhibition[]> => {
-            const res = await gethotnow();
-            if (!res.result) return [];
-            return Array.isArray(res.result) ? res.result : [];
-        },
+        queryFn: gethotnow,
     });
     return (
         <div className="min-h-screen">
